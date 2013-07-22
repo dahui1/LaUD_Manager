@@ -1,0 +1,33 @@
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <!-- Configuration for the default package. -->
+    <package name="default" extends="struts-default">
+        <action name="Signin" class="Actions.SigninAction">
+            <result name="success" type="redirect">index.jsp</result>
+            <result name="error" type="redirect">signin.jsp?false</result>
+        </action>
+        <action name ="ClusterStartup" class="Actions.ClusterStartup" >
+            <result name="success" type="redirect">startstop.jsp</result>
+            
+        </action>
+        <action name ="ClusterShutdown" class="Actions.ClusterShutdown" >
+            <result name="success" type="redirect">startstop.jsp</result>
+            
+        </action>
+        <action name ="ConnectDB" class="Actions.ConnectDB" >
+            <result name="success" type="redirect">cql.jsp</result>
+           <result name="error" type="redirect">connect.jsp</result>
+        </action>
+    </package>
+    <package name="default2" extends="json-default"> 
+        <action name = "NodeStatus" class="Actions.NodeStatus" >
+            <result name="nodesinfo" type="json"></result>
+        </action>
+        <action name = "NodeDetail" class="Actions.NodeDetail">
+            <result name="ainfo" type="json"></result>
+        </action>
+    </package>
+</struts>
