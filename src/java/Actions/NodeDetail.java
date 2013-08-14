@@ -1,18 +1,16 @@
-
 package Actions;
 
-import static Actions.NodeStatus.getClient;
-import static Actions.NodeStatus.getClusterManager;
-
-import Tools.Client;
 import Tools.ClusterManager;
 import Node.NodeInfo;
 import Node.RingNode;
+import Tools.ClusterConnection;
+import com.opensymphony.xwork2.ActionContext;
 
 import java.util.List;
 import java.util.Map;
 import java.io.IOException;
 
+import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.dht.Token;
 import org.apache.thrift.transport.TTransportException;
 import static org.junit.Assert.assertEquals;
@@ -24,81 +22,57 @@ import com.opensymphony.xwork2.ActionSupport;
  * @author yeyh10
  */
 public class NodeDetail  extends ActionSupport {
-    private static ClusterManager clusterManager;
-    private static Client client;
+    private ClusterManager clusterManager;
+    private Client client;
+    private ClusterConnection conn;
     private NodeInfo info;
     private String endPoint;
 
-    /**
-     * @return the clusterManager
-     */
-    public static ClusterManager getClusterManager() {
-        return clusterManager;
+    public ClusterManager getClusterManager() {
+        return this.clusterManager;
     }
 
-    /**
-     * @param aClusterManager the clusterManager to set
-     */
-    public static void setClusterManager(ClusterManager aClusterManager) {
-        clusterManager = aClusterManager;
+    public void setClusterManager(ClusterManager clusterManager) {
+        this.clusterManager = clusterManager;
     }
 
-    /**
-     * @return the client
-     */
-    public static Client getClient() {
-        return client;
+    public Client getClient() {
+        return this.client;
     }
 
-    /**
-     * @param aClient the client to set
-     */
-    public static void setClient(Client aClient) {
-        client = aClient;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    /**
-     * @return the info
-     */
     public NodeInfo getInfo() {
         return info;
     }
 
-    /**
-     * @param aInfo the info to set
-     */
     public void setInfo(NodeInfo aInfo) {
         info = aInfo;
     }
 
-    /**
-     * @return the endPoint
-     */
     public String getEndPoint() {
         return endPoint;
     }
 
-    /**
-     * @param endPoint the endPoint to set
-     */
     public void setEndPoint(String endPoint) {
         this.endPoint = endPoint;
     }
     
+    public ClusterConnection getConn() {
+        return conn;
+    }
+
+    public void setConn(ClusterConnection conn) {
+        this.conn = conn;
+    }
+    
     @Override
     public String execute() throws InterruptedException, TTransportException, IOException {
-        String host = "192.168.3.1";
-        Integer thrift = 9170;
-        Integer JMX = 7199;
-
-        setClient(new Client(host, thrift, JMX));
-        try {
-            getClient().connect();
-        } catch (IOException e) {
-        } catch (TTransportException e) {
-        }
-        
-        setClusterManager(new ClusterManager(getClient(), getClient().getJmxPort()));
+        ActionContext actionContext = ActionContext.getContext();
+        Map session = actionContext.getSession();
+        setClusterManager((ClusterManager)session.get("clusterManager"));
         RingNode ring = getClusterManager().listRing();
         Map<Token, String> rangeMap = ring.getRangeMap();
         List<Token> t = ring.getRanges();
@@ -116,5 +90,4 @@ public class NodeDetail  extends ActionSupport {
         }
         return "ainfo";
     }
-
 }

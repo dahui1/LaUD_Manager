@@ -4,18 +4,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>系统日志 &middot; Cassandra可视化管理工具</title>
+    <title>系统日志 &middot; LaUD可视化管理工具</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Javascript -->
     <script type="text/javascript" src="../assets/js/jquery-1.10.1.js"></script>
     <script type="text/javascript" src="../assets/js/bootstrap.js"></script>
-    <script type="text/javascript" src="../assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery.js"></script>
+    <script type="text/javascript" src="../assets/js/log.js"></script>
+    <script type="text/javascript" src="../assets/js/bootstrap-modal.js"></script>
+
     <!-- CSS -->
     <link href="../assets/css/bootstrap.css" rel="stylesheet">
     <link href="../assets/css/footer.css" rel="stylesheet">
-    <link href="../assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" media="screen">
     <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -50,71 +52,40 @@
       </div>
       <div class="span8 offset2">
       <label class="radio">
-        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-        获取最新的<input class="input-mini" type="text" placeholder="小于500">条日志
-      </label>
-      <label class="radio">
-        <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-        获取从
+        
       <div class="input-append" id="datetimepicker2">
-        <input data-format="MM/dd/yyyy HH:mm:ss PP" type="text">
-        <span class="add-on">
-          <i data-date-icon="icon-calendar" data-time-icon="icon-time" class="icon-calendar">
-          </i>
-        </span>
-      </div>
-      <script type="text/javascript">
-      $(document).ready(function() {
-        $(function() {
-          $('#datetimepicker2').datetimepicker({
-            language: 'en',
-            pick12HourFormat: true
-          });
-        });
-      });
-      </script>
-      开始的<input class="input-mini" type="text" placeholder="小于500">条日志
+          <input id="logip" type="text" placeholder="请输入ip地址">
+
+      </div>     
+     
       </label>
       <p>
-      <button class="btn btn-primary pull-right" type="button">获取日志</button>
+          <button class="btn btn-primary pull-right" type="button" onclick="showloglist();">获取日志列表</button>
       </p>
-      </br>
-      <table class="table table-hover">
-        <caption>日志</caption>
-          <thead>
-            <tr>
-              <th>序号</th>
-              <th>时间</th>
-              <th>日志内容</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>2013/07/02 13:30:40</td>
-              <td>dasdasd</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>2013/07/02 13:30:41</td>
-              <td>dasdasdasdasdadhahdkj</td>
-            </tr>
-
-            <tr>
-              <td>3</td>
-              <td>2013/07/02 13:30:42</td>
-              <td>dasdasdasdgjahgjhagjhsgjhas</td>
-            </tr>
-
+      <br>
+      <hr>
+      <table class="table table-hover" id="logtable" >
+          <tbody id="logs">
+            
           </tbody>
       </table>
+
     </div>
-    <div id="push"></div>
+          <div id="logmodal" class="modal hide fade" tabindex="-1" aria-hidden="true">
+          <div class="modal-header" >
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h3 id="logfilename"></h3>
+        </div>
+        <div class="modal-body" id="logmodalbody">
+	
+        </div>
+   </div>
     </div>
+     <div id="push"></div>
   </div>
     <div id="footer">
       <div class="container">
-        <p class="muted credit" align="middle">Developed by LaUD</a>.</p>
+        <p class="muted credit" align="middle">Developed by LaUD</p>
       </div>
     </div>
 

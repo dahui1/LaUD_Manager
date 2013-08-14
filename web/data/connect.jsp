@@ -4,12 +4,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>数据库连接 &middot; Cassandra可视化管理工具</title>
+    <title>数据库连接 &middot; LaUD可视化管理工具</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- javascript -->
-    <script src="../assets/js/jquery.js"></script>
+    <script src="../assets/js/jquery-1.10.1.js"></script>
     <script src="../assets/js/bootstrap.js"></script>
     <script src="../assets/js/functions.js"></script>
 
@@ -79,7 +79,7 @@
       }
     }
     </script>
-    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -117,8 +117,8 @@
             <table>
               <tbody id="addresses">
                 <tr>
-                  <td> <input type="text" class="input-medium" placeholder="IP" name="connectip">
-                   <input type="text" class="input-mini" placeholder="Port" name="connectport"></td>
+                    <td> <input type="text" class="input-medium" placeholder="IP" name="connectip" value="192.168.3.1">
+                        <input type="text" class="input-mini" placeholder="Port" name="connectport" value="9170"></td>
                 </tr>
             </table>
           <!--  <i class="icon-plus" onclick="addEntry(2)"></i>-->
@@ -129,8 +129,10 @@
             
           </div>
           <script>
+              
             var connected = "<%=(String)session.getAttribute("connected")%>";
-            if  (connected !== "null") {
+            if  (connected!=="null"){ 
+            
                 document.getElementById("unconnected").style.display = "none";
                 document.getElementById("connected").style.display = "block";
                 document.getElementById("connected").innerHTML = "您和数据库已连接，连接地址为" + connected
@@ -143,7 +145,7 @@
   </div>
     <div id="footer">
       <div class="container">
-        <p class="muted credit" align="middle">Developed by LaUD</a>.</p>
+        <p class="muted credit" align="middle">Developed by LaUD</p>
       </div>
     </div>
   </body>

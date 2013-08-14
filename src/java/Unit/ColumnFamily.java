@@ -40,9 +40,9 @@ public class ColumnFamily implements Serializable{
     private String keyCacheSavePeriod;
     private String readRepairChance;
     private String gcGrace;
-    private String memtableOperations;
+   /* private String memtableOperations;
     private String memtableThroughput;
-    private String memtableFlushAfter;
+    private String memtableFlushAfter;*/
     private String defaultValidationClass;
     private String minCompactionThreshold;
     private String maxCompactionThreshold;
@@ -217,48 +217,6 @@ public class ColumnFamily implements Serializable{
      */
     public void setGcGrace(String gcGrace) {
         this.gcGrace = gcGrace;
-    }
-
-    /**
-     * @return the memtableOperations
-     */
-    public String getMemtableOperations() {
-        return memtableOperations;
-    }
-
-    /**
-     * @param memtableOperations the memtableOperations to set
-     */
-    public void setMemtableOperations(String memtableOperations) {
-        this.memtableOperations = memtableOperations;
-    }
-
-    /**
-     * @return the memtableThroughput
-     */
-    public String getMemtableThroughput() {
-        return memtableThroughput;
-    }
-
-    /**
-     * @param memtableThroughput the memtableThroughput to set
-     */
-    public void setMemtableThroughput(String memtableThroughput) {
-        this.memtableThroughput = memtableThroughput;
-    }
-
-    /**
-     * @return the memtableFlushAfter
-     */
-    public String getMemtableFlushAfter() {
-        return memtableFlushAfter;
-    }
-
-    /**
-     * @param memtableFlushAfter the memtableFlushAfter to set
-     */
-    public void setMemtableFlushAfter(String memtableFlushAfter) {
-        this.memtableFlushAfter = memtableFlushAfter;
     }
 
     /**

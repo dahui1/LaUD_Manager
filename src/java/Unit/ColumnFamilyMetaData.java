@@ -30,6 +30,12 @@ public class ColumnFamilyMetaData implements Serializable{
     private IndexType indexType;
     private String indexName;
 
+
+/*    ColumnFamilyMetaData(String columnName, String validation)
+    {
+    	this.columnName = columnName;
+    	this.valiDationClass = validation;
+    }*/
     /**
      * @return the columnName
      */

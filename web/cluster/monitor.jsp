@@ -4,16 +4,16 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>实时监控数据 &middot; Cassandra可视化管理工具</title>
+    <title>实时监控数据 &middot; LaUD可视化管理工具</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- javascript -->
-    <script src="../assets/js/jquery.js"></script>
+    <script src="../assets/js/jquery-1.10.1.js"></script>
     <script src="../assets/js/bootstrap.js"></script>
-    <script src="../assets/js/status.js"></script>
     <script src="../assets/js/highcharts/highcharts.js"></script>
     <script src="../assets/js/highcharts/exporting.js"></script>
+    <script src="../assets/js/monitor.js"></script>
 
     <!-- CSS -->
     <link href="../assets/css/bootstrap.css" rel="stylesheet">
@@ -50,22 +50,37 @@
           <li class="active">实时监控数据</li>
         </ul>
       </div>
-      <div class="tabbable tabs-left">
-        <ul class="nav nav-tabs">
-          <li class="active"><a href="#statusA" data-toggle="tab">Status 1</a></li>
-          <li><a href="#statusB" data-toggle="tab">Status 2</a></li>
-          <li><a href="#statusC" data-toggle="tab">Status 3</a></li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane active" id="statusA">
-          </div>
-          <div class="tab-pane" id="statusB">
-            <p>There is nothing yet</p>
-          </div>
-          <div class="tab-pane" id="statusC">
-            <p>There is nothing yet</p>
+      <div class="row">
+        <div class="span2">
+            <ul class="nav nav-list" id="lists">
+                <li class="nav-header">Cluster</li>
+                <li><a href="#">系统状态监控</a></li>
+                <li class="nav-header">Thread Pools</li>
+                <li><a href="#" onclick="listEPs()">线程池监控</a></li>
+            </ul>
+      </div>
+      <script>
+        $(function () {
+           $(document).ready(function() {
+               getKeyspaces();
+           });
+        });
+      </script>
+      <div class="span10">
+        
+        <div id="input" style="display: none" class="span5 offset1">
+        <h5 class="form-signin-heading" id="text">请输入需要监控的机器IP：</h5>
+        <input id='ipa' name="ip" type="text" class="input-block-level" placeholder="IP Address"/>
+        <input id='ks' type="text" class="input-block-level" readonly="true"/>
+        <button class="btn btn-primary" onclick="getIPKS()">查看</button>
+        </div>
+        <div class="tabbable" id="tabtable" style="display: none">
+          <ul class="nav nav-tabs" id="tabs">
+          </ul>
+          <div class="tab-content" id="graphs">
           </div>
         </div>
+      </div>
       </div>
       <div id="push"></div>
     </div>

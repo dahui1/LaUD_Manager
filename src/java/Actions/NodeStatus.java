@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package Actions;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -11,59 +7,51 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import org.apache.cassandra.dht.Token;
-import org.apache.thrift.transport.TTransportException;
+import org.apache.cassandra.thrift.Cassandra.Client;
 
 import Node.RingNode;
 import Node.NodeInfo;
-import Tools.Client;
+import Tools.ClusterConnection;
 import Tools.ClusterManager;
 
 import static org.junit.Assert.assertEquals;
 
 public class NodeStatus extends ActionSupport {
 
-    private static ClusterManager clusterManager;
-    private static Client client;
+    private ClusterManager clusterManager;
+    private Client client;
+    private ClusterConnection conn;
+
+    public ClusterConnection getConn() {
+        return this.conn;
+    }
+
+    public void setConn(ClusterConnection conn) {
+        this.conn = conn;
+    }
+    
     private List<NodeInfo> infos = new ArrayList<NodeInfo>();
 
-    /**
-     * @return the clusterManager
-     */
-    public static ClusterManager getClusterManager() {
+    public  ClusterManager getClusterManager() {
         return clusterManager;
     }
 
-    /**
-     * @param aClusterManager the clusterManager to set
-     */
-    public static void setClusterManager(ClusterManager aClusterManager) {
-        clusterManager = aClusterManager;
+    public  void setClusterManager(ClusterManager clusterManager) {
+        this.clusterManager = clusterManager;
     }
 
-    /**
-     * @return the client
-     */
-    public static Client getClient() {
-        return client;
+    public Client getClient() {
+        return this.client;
     }
 
-    /**
-     * @param aClient the client to set
-     */
-    public static void setClient(Client aClient) {
-        client = aClient;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    /**
-     * @return the infos
-     */
     public List<NodeInfo> getInfos() {
         return infos;
     }
 
-    /**
-     * @param infos the infos to set
-     */
     public void setInfos(List<NodeInfo> infos) {
         this.infos = infos;
     }
@@ -74,22 +62,9 @@ public class NodeStatus extends ActionSupport {
      */
     @Override
     public String execute() throws Exception {
-        String host = "192.168.3.1";
-        Integer thrift = 9170;
-        Integer JMX = 7199;
-
-        setClient(new Client(host, thrift, JMX));
-        try {
-            getClient().connect();
-        } catch (TTransportException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
-
-        setClusterManager(new ClusterManager(getClient(), getClient().getJmxPort()));
+        setClusterManager((ClusterManager)session.get("clusterManager"));
         RingNode ring = getClusterManager().listRing();
         Map<Token, String> rangeMap = ring.getRangeMap();
         List<Token> t = ring.getRanges();
@@ -109,3 +84,5 @@ public class NodeStatus extends ActionSupport {
         return "nodesinfo";
     }
 }
+
+

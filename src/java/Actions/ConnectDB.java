@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.ActionContext;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Map;
@@ -39,15 +40,17 @@ public class ConnectDB extends ActionSupport{
     public void setConnectport(String connectport) {
         this.connectport = connectport;
     }
-    public static java.sql.Connection con=null;
+     
     
     @Override
     public String execute(){
+        java.sql.Connection con=null;
         String ip=getConnectip();
         String port=getConnectport();
         System.out.println("connectip="+ip);
+       
         System.out.println("connecport="+port);
-
+    
         String host=System.getProperty("url","jdbc:laud://"+ip+":"+port+
                 "?data_port=9091&support_function=true&hive=false");
         System.out.println(host);
@@ -59,6 +62,7 @@ public class ConnectDB extends ActionSupport{
             ActionContext actionContext = ActionContext.getContext();
             Map session = actionContext.getSession();
             session.put("connected", ip+":"+port);
+            session.put("connection", con);
             System.out.println("success");
             return SUCCESS;
         } catch (ClassNotFoundException ex) {
@@ -71,4 +75,22 @@ public class ConnectDB extends ActionSupport{
         }
 
     }
+    
+    public String  disconnect(){
+        ActionContext actionContext = ActionContext.getContext();
+        Map session = actionContext.getSession();
+        java.sql.Connection con=(java.sql.Connection) session.get("connection");
+        if(con!=null){
+            try {
+                con.close();
+                System.out.println(((java.sql.Connection) session.get("connection")).isClosed());
+                System.out.println("con is closed!");
+                session.remove("connection");
+                session.remove("connected");
+            } catch (SQLException ex) {
+                Logger.getLogger(ConnectDB.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return "disconnect";
+    }      
 }

@@ -30,15 +30,22 @@ public class Cell implements Unit, Serializable {
     private String value;
     private Date date;
     private DefaultMutableTreeNode treeNode;
+    private byte[] byteValue;
 
     public Cell() {
     }
+    public Cell(String name, String value)
+    {
+    	this.name = name;
+    	this.value = value;
+    }
 
-    public Cell(Unit parent, String name, String value, Date date) {
+    public Cell(Unit parent, String name, String value, Date date, byte[] byteValue) {
         this.parent = parent;
         this.name = name;
         this.value = value;
         this.date = date;
+        this.byteValue = byteValue;
     }
 
     /**
@@ -110,4 +117,12 @@ public class Cell implements Unit, Serializable {
     public void setTreeNode(DefaultMutableTreeNode treeNode) {
         this.treeNode = treeNode;
     }
+
+	public byte[] getByteValue() {
+		return byteValue;
+	}
+
+	public void setByteValue(byte[] byteValue) {
+		this.byteValue = byteValue;
+	}
 }

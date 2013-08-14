@@ -4,14 +4,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>参数配置 &middot; Cassandra可视化管理工具</title>
+    <title>参数配置 &middot; LaUD可视化管理工具</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- javascript -->
-    <script src="../assets/js/jquery.js"></script>
+    <script src="../assets/js/jquery-1.10.1.js"></script>
     <script src="../assets/js/bootstrap.js"></script>
-    <script src="../assets/js/bootstrap-editable.min.js"></script>
+    <script src="../assets/js/bootstrap-editable.js"></script>
     <!-- CSS -->
     <link href="../assets/css/bootstrap.css" rel="stylesheet">
     <link href="../assets/css/bootstrap-editable.css" rel="stylesheet"/>
@@ -100,7 +100,6 @@
                 <script type="text/javascript">
                   $('#para1').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -113,7 +112,6 @@
                 <script type="text/javascript">
                   $('#para2').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -126,7 +124,6 @@
                 <script type="text/javascript">
                   $('#para3').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -139,7 +136,6 @@
                 <script type="text/javascript">
                   $('#para4').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -152,7 +148,6 @@
                 <script type="text/javascript">
                   $('#para5').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -165,7 +160,6 @@
                 <script type="text/javascript">
                   $('#para6').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -178,7 +172,6 @@
                 <script type="text/javascript">
                   $('#para7').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -191,7 +184,6 @@
                 <script type="text/javascript">
                   $('#para8').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -204,7 +196,6 @@
                 <script type="text/javascript">
                   $('#para9').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -217,7 +208,6 @@
                 <script type="text/javascript">
                   $('#para10').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -230,7 +220,6 @@
                 <script type="text/javascript">
                   $('#para11').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -243,7 +232,6 @@
                 <script type="text/javascript">
                   $('#para12').editable({
                   type: 'select',
-                  url: '/post',
                   title: '选择新值',
                   value: 1,    
                   source: [
@@ -261,7 +249,6 @@
                 <script type="text/javascript">
                   $('#para13').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -274,7 +261,6 @@
                 <script type="text/javascript">
                   $('#para14').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -287,7 +273,6 @@
                 <script type="text/javascript">
                   $('#para15').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -300,7 +285,6 @@
                 <script type="text/javascript">
                   $('#para16').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -327,7 +311,6 @@
                 <script type="text/javascript">
                   $('#para17').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>
@@ -340,7 +323,6 @@
                 <script type="text/javascript">
                   $('#para18').editable({
                   type: 'text',
-                  url: '/post',
                   title: '输入新值'
                   });
                 </script>

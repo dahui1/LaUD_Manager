@@ -9,15 +9,12 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 
-import static com.opensymphony.xwork2.Action.SUCCESS;
 import com.opensymphony.xwork2.ActionSupport;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,10 +30,9 @@ public class ClusterShutdown extends ActionSupport{
     public void setShutiplist(String shutiplist) {
         this.shutiplist = shutiplist;
     }
-
    
   
-      @Override
+    @Override
     public String execute() throws Exception {
        
         String[] ips = getShutiplist().split(";");
@@ -59,7 +55,7 @@ public class ClusterShutdown extends ActionSupport{
                         if (isAuthenticated == false)
                             throw new IOException("Authentication failed.");    
                         Session sess = conn.openSession();
-                        sess.execCommand("kill -9 `jps | grep 'CassandraDaemon' | awk '{print $1}'`");
+                        sess.execCommand("kill -9 `jps | grep 'LaUDDaemon' | awk '{print $1}'`");
                         System.out.println("Here is some information about the remote host:");
                         InputStream stdout = new StreamGobbler(sess.getStdout());
 	    	
@@ -89,6 +85,6 @@ public class ClusterShutdown extends ActionSupport{
             });
             t.start();
         }
-       return SUCCESS;
+       return "success";
     }
 }

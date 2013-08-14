@@ -3,12 +3,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>集群状态 &middot; Cassandra可视化管理工具</title>
+    <title>集群状态 &middot; LaUD可视化管理工具</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- javascript -->
-    <script src="../assets/js/jquery.js"></script>
+    <script src="../assets/js/jquery-1.10.1.js"></script>
     <script src="../assets/js/bootstrap.js"></script>
     <script src="../assets/js/functions.js"></script>
 

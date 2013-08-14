@@ -39,7 +39,11 @@ public class Key implements Unit, Serializable {
         this.sColumns = sColumns;
         this.cells = cells;
     }
-
+    public Key(String name,  Map<String, Cell> cells)
+    {
+    	this.name = name;
+    	this.cells = cells;
+    }
     /**
      * @return the name
      */

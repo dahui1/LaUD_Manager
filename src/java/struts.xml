@@ -9,14 +9,10 @@
             <result name="success" type="redirect">index.jsp</result>
             <result name="error" type="redirect">signin.jsp?false</result>
         </action>
-        <action name ="ClusterStartup" class="Actions.ClusterStartup" >
-            <result name="success" type="redirect">startstop.jsp</result>
-            
+        <action name="Signout" class="Actions.SignoutAction">
+            <result name="success" type="redirect">../signin.jsp</result>
         </action>
-        <action name ="ClusterShutdown" class="Actions.ClusterShutdown" >
-            <result name="success" type="redirect">startstop.jsp</result>
-            
-        </action>
+
         <action name ="ConnectDB" class="Actions.ConnectDB" >
             <result name="success" type="redirect">cql.jsp</result>
            <result name="error" type="redirect">connect.jsp</result>
@@ -24,10 +20,86 @@
     </package>
     <package name="default2" extends="json-default"> 
         <action name = "NodeStatus" class="Actions.NodeStatus" >
-            <result name="nodesinfo" type="json"></result>
+            <result name="nodesinfo" type="json">
+                <param name="root">infos</param>
+            </result>
         </action>
+        
         <action name = "NodeDetail" class="Actions.NodeDetail">
-            <result name="ainfo" type="json"></result>
+            <result name="ainfo" type="json">
+                <param name="root">info</param>
+            </result>
+        </action>
+        
+        <action name = "disconnect" class="Actions.ConnectDB" method="disconnect">
+            <result name="disconnect" type="json"></result>
+        </action>
+        
+        <action name ="ClusterStartup" class="Actions.ClusterStartup" >
+            <result name="success" type="json"></result>
+        </action>
+        
+        <action name ="ClusterShutdown" class="Actions.ClusterShutdown" >
+            <result name="success" type="json"></result>
+        </action>
+        
+         <action name ="CQLexec" class="Actions.CQLexec"  >
+            <result name="cqlrs" type="json"></result>
+        </action>
+        
+        <action name = "KSStatics" class="Actions.KSStatics">
+            <result name="ksstatics" type="json">
+                <param name="root">result</param>
+            </result>
+        </action>
+        
+        <action name = "GetKeyspaces" class="Actions.GetInfos" method="getKSs">
+            <result name="keyspaces" type="json">
+                <param name="root">keyspaces</param>
+            </result>
+        </action>
+        
+        <action name = "EndPoints" class="Actions.GetInfos" method="getEps">
+            <result name="endpoints" type="json">
+                <param name="root">endpoints</param>
+            </result>
+        </action>
+        
+        <action name = "TPThreads" class="Actions.GetTPNames">
+            <result name="tps" type="json">
+                <param name="root">tpnames</param>
+            </result>
+        </action>
+        
+        <action name = "TPStatics" class="Actions.TPStatics">
+            <result name="tpstatics" type="json">
+                <param name="root">result</param>
+            </result>
+        </action>
+        
+        <action name = "GetCFs" class="Actions.GetCFs">
+            <result name="cfs" type="json"></result>
+        </action>
+        
+        <action name = "InitCluster" class="Actions.InitCluster" >
+            <result name="init" type="json"></result>
+        </action>
+        
+        <action name ="GetLogList" class="Actions.GetLog">
+            <result name="getloglist" type="json" ></result>
+        </action>
+        
+        <action name ="OpenLog" class="Actions.OpenLogFile">
+            <result name="logcontent" type="json" ></result>
+        </action>
+        
+        <action name ="GetKSCFs" class="Actions.GetInfos" method="getKSCFs">
+            <result name="kscfs" type="json">
+                <param name="root">kscfs</param>
+            </result>
+        </action>
+        <action name ="GetParams" class="Actions.GetInitParam">
+            <result name="params" type="json"></result>
         </action>
     </package>
 </struts>

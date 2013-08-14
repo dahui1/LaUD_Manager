@@ -4,15 +4,12 @@
  */
 package Actions;
 
-import static com.opensymphony.xwork2.Action.SUCCESS;
 import com.opensymphony.xwork2.ActionSupport;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import ch.ethz.ssh2.Connection; 
 import ch.ethz.ssh2.Session; 
@@ -54,7 +51,7 @@ public class ClusterStartup extends ActionSupport{
                         if (isAuthenticated == false)
                             throw new IOException("Authentication failed.");
                         Session sess = conn.openSession();
-                        sess.execCommand("/home/usdms/cassandra1.2/bin/cassandra");
+                        sess.execCommand("/home/usdms/laud-1.0.7/cassandra/bin/cassandra");
                         System.out.println("Here is some information about the remote host:");
                         InputStream stdout = new StreamGobbler(sess.getStdout());
                         BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
@@ -84,6 +81,6 @@ public class ClusterStartup extends ActionSupport{
             });
             t.start();
         }
-        return SUCCESS;
+        return "success";
     }
 }

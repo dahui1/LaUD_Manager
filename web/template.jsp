@@ -7,17 +7,18 @@
               </button>
               <a class="brand" href="../index.jsp">LaUD Manager</a>
               <div class="nav-collapse collapse">
-              <p class="navbar-text pull-right">
-                  欢迎光临, <%
-                      out.println(session.getAttribute("user"));
-                      %>
-              </p>
+            <p class="navbar-text pull-right">
+                欢迎光临, <a onclick="window.location='Signout'"><%
+                    out.println(session.getAttribute("user"));
+                    %></a>
+            </p>
                 <ul class="nav">
                   <li id="indexpage"><a href="../index.jsp">首页</a></li>
                   <li class="divider-vertical"></li>
                   <li class="dropdown" id="cluster">
                     <a class="dropdown-toggle" data-toggle="dropdown"> 集群管理 <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                      <li><a href="../cluster/init.jsp">初始化集群</a></li>
                       <li><a href="../cluster/startstop.jsp"> 启动/关闭集群 </a></li>
                       <li><a href="../cluster/status.jsp"> 集群状态 </a></li>
                       <li><a href="../cluster/monitor.jsp"> 集群监控 </a></li>
@@ -35,7 +36,7 @@
                           <ul class="dropdown-menu pull-right">
                               <li><a tabindex="-1" href="../data/dbinfo.jsp">LaUD KV</a></li>
                               <li><a tabindex="-1" href="#">LaUD Object</a></li>
-                              <li><a tabindex="-1" href="#">LaUD ..</a></li>
+                              <li><a tabindex="-1" href="#">LaUDFS</a></li>
                           </ul>
                       </li>
                     </ul>
