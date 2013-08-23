@@ -168,8 +168,8 @@ function getNodesInfo() {
         dataType:'json',  
         success:function (data) {  
             $(data).each(function (i, value) {  
-                $("#nodesinfo").append("<tr id=\"" + value.endpoint + "\"><td>" + value.endpoint + "</td><td>" + value.status 
-                    + "</td><td>" + value.state + "</td><td>" + value.load
+                $("#nodesinfo").append("<tr id=\"" + value.endpoint + "\"><td>" + value.endpoint 
+                    + "</td><td>" + value.status + "</td><td>" + value.load
                     + "</td><td>" + value.owns + "</td><td>" + value.range 
                     + "</td><td> <button class=\"btn btn-default\" onclick=\"getDetails('" 
                     + value.endpoint + "')\">详细信息</button></td></tr>");  

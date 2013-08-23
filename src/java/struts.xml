@@ -101,5 +101,10 @@
         <action name ="GetParams" class="Actions.GetInitParam">
             <result name="params" type="json"></result>
         </action>
+        <action name = "ClusterStatics" class="Actions.ClusterStatics">
+            <result name="cluster" type="json">
+                <param name="root">result</param>
+            </result>
+        </action>
     </package>
 </struts>

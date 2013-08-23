@@ -50,6 +50,12 @@
       </div>
       <div class="span10 offset1" id="nodes">
           <table class="table table-hover" id="detail" style="display:none">
+              <thead>
+                  <tr>
+                      <td> 属性名 </td>
+                      <td> 数值 </td>
+                  </tr>
+              </thead>
               <tbody id="detailedinfo">
                   
               </tbody>

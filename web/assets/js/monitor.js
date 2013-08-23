@@ -27,6 +27,7 @@ function inputIP(keyspace) {
             + "<input id='ks' type=\"text\" class=\"input-block-level\" readonly=\"true\"/>"
             + "<button class=\"btn btn-primary\" onclick=\"getIPKS()\">查看</button>";
     document.getElementById("tabtable").style.display = "none";
+    document.getElementById("description").style.display = "none";
     document.getElementById("input").style.display = "block";
     document.getElementById("tabs").innerHTML = null;
     document.getElementById("ks").value = keyspace;
@@ -159,6 +160,7 @@ function listEPs() {
     document.getElementById("tabtable").style.display = "none";
     document.getElementById("input").style.display = "block";
     document.getElementById("tabs").innerHTML = null;
+    document.getElementById("description").style.display = "none";
     document.getElementById("input").innerHTML = "<h5 class=\"form-signin-heading\" id=\"text\">请选择需要监控的机器IP：</h5>"
                     + "请先选择ip：</br><select id=\"ips\" onchange=\"gettpIP()\"></select></br>"
                     + "再选择对应线程池：</br><select id=\"tps\"></select></br>"
@@ -293,6 +295,122 @@ function drawTPGraph(type, id, ip, tpname) {
                     return '<b>'+ this.series.name +'</b><br/>'+  
                     Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+  
                     'value: ' + Highcharts.numberFormat(this.y, 0);  
+            }  
+        },  
+        legend: {  
+            enabled: false  
+        },  
+        exporting: {  
+            enabled: false  
+        },  
+        series: [{  
+            name: type,
+            data: (function() {  
+                // generate an array of random data  
+                var data = [],  
+                    time = (new Date()).getTime(),  
+                    i;  
+
+                for (i = -9; i <= 0; i++) {  
+                    data.push({  
+                        x: time + i * 2000, 
+                        y : 0
+                    });  
+                }  
+                return data;  
+            })()  
+        }]  
+    });
+}
+
+function getClusterSta() {
+    int = window.clearInterval(int);
+    document.getElementById("input").style.display = "none";
+    document.getElementById("tabtable").style.display = "block";
+    document.getElementById("description").style.display = "none";
+    document.getElementById("tabs").innerHTML = null;
+    document.getElementById("graphs").innerHTML = null;
+    $("#tabs").append("<li class=\"active\"><a href=\"#statusRL\" data-toggle=\"tab\" onclick=\"drawClusterGraph('Read Latency','statusRL',"
+            + "'ms')\">Read Latency</a></li>");
+    $("#tabs").append("<li><a href=\"#statusRC\" data-toggle=\"tab\" onclick=\"drawClusterGraph('Read Count','statusRC',"
+            + "'')\">Read Count</a></li>");
+    $("#tabs").append("<li><a href=\"#statusWL\" data-toggle=\"tab\" onclick=\"drawClusterGraph('Write Latency','statusWL',"
+            + "'ms')\">Write Latency</a></li>");
+    $("#tabs").append("<li><a href=\"#statusWC\" data-toggle=\"tab\" onclick=\"drawClusterGraph('Write Count','statusWC',"
+            + "'')\">Write Count</a></li>");
+    $("#graphs").append("<div class=\"tab-pane active\" id=\"statusRL\"></div>");
+    $("#graphs").append("<div id=\"statusRC\"></div>");
+    $("#graphs").append("<div id=\"statusWL\"></div>");
+    $("#graphs").append("<div id=\"statusWC\"></div>");
+    drawClusterGraph("Read Latency", 'statusRL', "ms");
+}
+
+function drawClusterGraph(type, id, unit) {
+    document.getElementById("statusRL").innerHTML = null;
+    document.getElementById("statusRC").innerHTML = null;
+    document.getElementById("statusWL").innerHTML = null;
+    document.getElementById("statusWC").innerHTML = null;
+    int = window.clearInterval(int);
+    Highcharts.setOptions({  
+        global: {  
+            useUTC: false  
+        }  
+    });  
+    var chart;  
+    chart = new Highcharts.Chart({  
+        chart: {  
+            renderTo: id,  
+            type: 'spline',  
+            marginRight: 20,  
+            events: {  
+                load: function() {  
+                    // set up the updating of the chart each second  
+                    var series = this.series[0];  
+                    int = self.setInterval(function() {  
+                        var x = (new Date()).getTime();
+                        var y;
+                        $.ajax({  
+                            url:'ClusterStatics',  
+                            type:'POST',  
+                            data:{"type":type},  
+                            dataType:'json',  
+                            success:function (data) {  
+                                y = data;
+                                if (y == "NaN")
+                                    y = 0;
+                                else
+                                    y = parseFloat(y);
+                                series.addPoint([x, y], true, true);
+                            },
+                        }); 
+                    }, 2000);  
+                }  
+            }  
+        },  
+        title: {  
+            text: '<b>' + type + '</b>'  
+        },  
+        xAxis: {  
+            type: 'datetime',  
+            tickPixelInterval: 300  
+        },  
+        yAxis: {
+            plotLines: [{  
+                value: 0,  
+                width: 1,  
+                color: '#808080'  
+            }]  
+        },  
+        tooltip: {  
+            formatter: function() {  
+                if (type == "Read Count" || type == "Write Count")
+                    return '<b>'+ this.series.name +'</b><br/>'+  
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+  
+                    'value: ' + Highcharts.numberFormat(this.y, 0) + unit; 
+                else
+                    return '<b>'+ this.series.name +'</b><br/>'+  
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+  
+                    'value: ' + Highcharts.numberFormat(this.y, 6) + unit;  
             }  
         },  
         legend: {  

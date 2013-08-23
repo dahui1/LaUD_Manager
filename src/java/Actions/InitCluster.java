@@ -1,5 +1,6 @@
 package Actions;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,6 +10,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import javax.servlet.ServletContext;
+import org.apache.struts2.ServletActionContext;
 
 /**
  *
@@ -24,12 +28,20 @@ public class InitCluster extends ActionSupport {
     private String rpcport;
     private String seeds;
     private String tokens;
-    private static String base = "/home/usdms/apache-tomcat-7.0.42/webapps/ROOT/WEB-INF/classes/Actions/";
-    private static String yamldir = base + "cassandra_server.yaml";
-    private static String tokendir = base +"token";
+    private static String base;// = getServlet().getServletContext().getRealPath("/");
+    private static String yamldir;
+    private static String tokendir;
 
     @Override
     public String execute() throws FileNotFoundException, IOException {
+        ActionContext actionContext = ActionContext.getContext();
+        Map session = actionContext.getSession();
+        ServletContext sc = ServletActionContext.getServletContext();  
+        String path = sc.getRealPath("/");
+        base = path + "/config/";
+        yamldir = base + "cassandra.yaml";
+        tokendir = base +"token";
+        System.out.println(base);
         File filename = new File(yamldir);
         FileReader fileread;
         fileread = new FileReader(filename);
@@ -81,7 +93,10 @@ public class InitCluster extends ActionSupport {
                 }
                 mm.close();
                 for (String seed : allseeds) {
-                    //send to all nodes
+                    String cmd = "scp " + yamldir +" usdms@" + seed + ":" 
+                            + (String)session.get("root") + "/cassandra/conf/";;
+                    Runtime run = Runtime.getRuntime();
+                    run.exec(cmd);
                 }
                 //mm.writeBytes(allread);
             } catch (IOException e1) {
@@ -95,7 +110,7 @@ public class InitCluster extends ActionSupport {
             for (String seed : allseeds) {
                 RandomAccessFile mm;
                 try {
-                    mm = new RandomAccessFile(base+"cassandra.yaml", "rw");
+                    mm = new RandomAccessFile(yamldir, "rw");
                     for (String one : allread) {
                         if (one.contains("initial_token:")) {
                             one = "initial_token: " + alltokens[i];
@@ -104,7 +119,10 @@ public class InitCluster extends ActionSupport {
                         mm.writeBytes(one + "\r\n");
                     }
                     mm.close();
-                    //send the file
+                    String cmd = "scp " + yamldir +" usdms@" + seed + ":" 
+                            + (String)session.get("root") + "/cassandra/conf/";;
+                    Runtime run = Runtime.getRuntime();
+                    run.exec(cmd);
                     
                 } catch (IOException e1) {
                     e1.printStackTrace();

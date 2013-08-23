@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.ServletContext;
+import org.apache.struts2.ServletActionContext;
 
 /**
  *
@@ -24,10 +26,9 @@ public class GetInitParam extends ActionSupport {
     private String rpcport;
     private List<String> seeds;
     private List<String> tokens = new ArrayList<String>();
-    private static String base = "/Users/yeyh10/Downloads/LaUD_Manager/src/java/Actions/";
-    //private static String base = "/home/usdms/apache-tomcat-7.0.42/webapps/ROOT/WEB-INF/classes/Actions/";
-    private static String yamldir = base + "cassandra_server.yaml";
-    private static String tokendir = base +"token";
+    private static String base;
+    private static String yamldir;
+    private static String tokendir;
 
     public String getRootdir() {
         return rootdir;
@@ -98,6 +99,11 @@ public class GetInitParam extends ActionSupport {
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
         rootdir = (String)session.get("root");
+        ServletContext sc = ServletActionContext.getServletContext();  
+        String path = sc.getRealPath("/");
+        base = path + "/config/";
+        yamldir = base + "cassandra_server.yaml";
+        tokendir = base +"token";
         File filename = new File(base+"config");
         FileReader fileread;
         fileread = new FileReader(filename);
@@ -115,36 +121,7 @@ public class GetInitParam extends ActionSupport {
             while ((read = bufread.readLine()) != null) {
                 seeds.add(read);
             }
-            /*
-            while ((read = bufread.readLine()) != null) {
-                if (read.contains("cluster_name")) {
-                    clustername = read.substring("cluster_name:".length()).trim();
-                    clustername = clustername.substring(1, clustername.length()-1);
-                }
-                else if (read.contains("data_file_directories")) {
-                    read = bufread.readLine();
-                    datafiledir = "";
-                    while (read.contains(" - ")) {
-                        datafiledir += read.substring(read.lastIndexOf("-") + 1).trim();
-                        datafiledir += ";";
-                        read = bufread.readLine();
-                    }
-                    datafiledir = datafiledir.substring(0, datafiledir.length()-1).trim();
-                }
-                else if (read.contains("commitlog_directory"))
-                    commitlogdir = read.substring("commitlog_directory:".length()).trim();
-                else if (read.contains("saved_caches_directory"))
-                    cachesdir = read.substring("saved_caches_directory: ".length()).trim();
-                else if (read.contains("seeds:")){
-                    int index = read.lastIndexOf("seeds:") + "seeds:".length() + 2;
-                    String temp = read.substring(index).trim();
-                    seeds = temp.split(",");
-                    seeds[seeds.length-1] = seeds[seeds.length-1].substring(0, seeds[seeds.length-1].length()-1);
-                }
-                else if (read.contains("rpc_port"))
-                    rpcport = read.substring("rpc_port:".length()).trim();
-                    * 
-            }*/
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,6 +130,7 @@ public class GetInitParam extends ActionSupport {
         fileread.close();
         
         filename = new File(tokendir);
+        System.out.println(tokendir);
         fileread = new FileReader(filename);
         bufread = new BufferedReader(fileread);
         try {

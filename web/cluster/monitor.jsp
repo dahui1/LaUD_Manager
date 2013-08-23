@@ -54,7 +54,7 @@
         <div class="span2">
             <ul class="nav nav-list" id="lists">
                 <li class="nav-header">Cluster</li>
-                <li><a href="#">系统状态监控</a></li>
+                <li><a href="#" onclick="getClusterSta()">系统状态监控</a></li>
                 <li class="nav-header">Thread Pools</li>
                 <li><a href="#" onclick="listEPs()">线程池监控</a></li>
             </ul>
@@ -67,7 +67,20 @@
         });
       </script>
       <div class="span10">
-        
+        <div id="description">
+            <h3>在此部分，我们提供对集群三种级别的监控：</h3>
+            <dl class="dl-horizontal">
+                <dt>集群级别监控</dt>
+                <dd>对整体Cassandra集群运行状况的一个概览，将各台机器得到的结果综合起来得到实时的监控数据，包括读/写延迟和读/写数目等。</dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>线程池级别监控</dt>
+                <dd>对选定机器的所有进程池进行多个数据的实时监控，包括活跃任务数，等待任务数和完成任务数等。</dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>Keyspace级别监控</dt>
+                <dd>对选定机器中选定的Keyspace进行的实时监控，包括读/写延迟和读/写数目等。</dd>
+            </dl>        </div>
         <div id="input" style="display: none" class="span5 offset1">
         <h5 class="form-signin-heading" id="text">请输入需要监控的机器IP：</h5>
         <input id='ipa' name="ip" type="text" class="input-block-level" placeholder="IP Address"/>
