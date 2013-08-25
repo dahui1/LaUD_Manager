@@ -154,9 +154,9 @@ public class CQLexec extends ActionSupport{
                     }
                     if(rs!=null){
                         ResultSetMetaData md =rs.getMetaData();
-                        this.thead="&lt;table class=\"table table-hover\"&gt;"+
-                        "&lt;thead&gt;&lt;tr align=\"left\"&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;name&lt;/th&gt;&lt;th&gt;value&lt;/th&gt;&lt;th&gt;&lt;/th&gt;"+
-                        "&lt;/tr&gt;&lt;/thead&gt;&lt;tbody id =\"rstable\"&gt;&lt;/tbody&gt;";
+                        this.thead="<table class=\"table table-hover\">"+
+                        "<thead><tr align=\"left\"><th></th><th>name</th><th>value</th><th></th>"+
+                        "</tr></thead><tbody id =\"rstable\"></tbody>";
                         rslist=new ArrayList<String>();
                         jslist=new ArrayList<String>();
                         
@@ -165,16 +165,16 @@ public class CQLexec extends ActionSupport{
                         while(rs.next()){
                             if(pagerows>0){
                                 String list = null;
-                                String jsstring="<div class=\"cqlrs\">&lt;table class=\"table table-bordered\"&gt;";
-                                list="&lt;tr&gt;&lt;td&gt;"+row+"&lt;/td&gt;&lt;td&gt;"+md.getColumnLabel(1)+"&lt;/td&gt;&lt;td&gt;"+
-                                rs.getString(1)+"&lt;/td&gt;"+
-                                "&lt;td&gt;<a id=\"rs"+row+"\"  rel=\"popover\">显示详细结果</a>&lt;/td&gt;&lt;/tr&gt;";
+                                String jsstring="<div class=\"cqlrs\"><table class=\"table table-bordered\">";
+                                list="<tr><td>"+row+"</td><td>"+md.getColumnLabel(1)+"</td><td>"+
+                                rs.getString(1)+"</td>"+
+                                "<td><a id=\"rs"+row+"\"  rel=\"popover\">显示详细结果</a></td></tr>";
                                 
                                 int n=md.getColumnCount();
                                 for(int i=1;i<=n;i++){
-                                    jsstring=jsstring+"&lt;tr&gt;&lt;td&gt;"+md.getColumnLabel(i)+"&lt;/td&gt;&lt;td&gt;"+rs.getString(i)+"&lt;/td&gt;&lt;/tr&gt;";
+                                    jsstring=jsstring+"<tr><td>"+md.getColumnLabel(i)+"</td><td>"+rs.getString(i)+"</td></tr>";
                                 }
-                                jsstring=jsstring+"&lt;/table&gt;</div>";
+                                jsstring=jsstring+"</table></div>";
                                 jsstring="$(\"#rs"+row+"\").popover({content:'"+jsstring+"',placement:'left',html: true});";
                                 rslist.add(list);
                                 jslist.add(jsstring);
@@ -198,9 +198,9 @@ public class CQLexec extends ActionSupport{
                     statement.execute(str);
                     rs=statement.getResultSet();
                     ResultSetMetaData md =rs.getMetaData();
-                    this.thead="&lt;table class=\"table table-hover\"&gt;"+
-                    "&lt;thead&gt;&lt;tr align=\"left\"&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;name&lt;/th&gt;&lt;th&gt;value&lt;/th&gt;&lt;th&gt;&lt;/th&gt;"+
-                    "&lt;/tr&gt;&lt;/thead&gt;&lt;tbody id =\"rstable\"&gt;&lt;/tbody&gt;";
+                    this.thead="<table class=\"table table-hover\">"+
+                    "<thead><tr align=\"left\"><th></th><th>name</th><th>value</th><th></th>"+
+                    "</tr></thead><tbody id =\"rstable\"></tbody>";
                     rslist=new ArrayList<String>();
                     jslist=new ArrayList<String>();
                     int row=1;
@@ -209,16 +209,16 @@ public class CQLexec extends ActionSupport{
                     while(rs.next()){
                         if(pagerows>0 && row>=index){
                             String list = null;
-                            String jsstring="<div class=\"cqlrs\">&lt;table class=\"table table-bordered\"&gt;";
-                            list="&lt;tr&gt;&lt;td&gt;"+row+"&lt;/td&gt;&lt;td&gt;"+md.getColumnLabel(1)+"&lt;/td&gt;&lt;td&gt;"+
-                            rs.getString(1)+"&lt;/td&gt;"+
-                            "&lt;td&gt;<a id=\"rs"+row+"\"  rel=\"popover\">显示详细结果</a>&lt;/td&gt;&lt;/tr&gt;";
+                            String jsstring="<div class=\"cqlrs\"><table class=\"table table-bordered\">";
+                            list="<tr><td>"+row+"</td><td>"+md.getColumnLabel(1)+"</td><td>"+
+                            rs.getString(1)+"</td>"+
+                            "<td><a id=\"rs"+row+"\"  rel=\"popover\">显示详细结果</a></td></tr>";
                             
                             int n=md.getColumnCount();
                             for(int i=1;i<=n;i++){
-                                jsstring=jsstring+"&lt;tr&gt;&lt;td&gt;"+md.getColumnLabel(i)+"&lt;/td&gt;&lt;td&gt;"+rs.getString(i)+"&lt;/td&gt;&lt;/tr&gt;";
+                                jsstring=jsstring+"<tr><td>"+md.getColumnLabel(i)+"</td><td>"+rs.getString(i)+"</td></tr>";
                             }
-                            jsstring=jsstring+"&lt;/table&gt;</div>";
+                            jsstring=jsstring+"</table></div>";
                             jsstring="$(\"#rs"+row+"\").popover({content:'"+jsstring+"',placement:'left',html: true});";
                             rslist.add(list);
                             jslist.add(jsstring);
@@ -239,9 +239,9 @@ public class CQLexec extends ActionSupport{
                     statement.execute(str);
                     rs=statement.getResultSet();
                     ResultSetMetaData md =rs.getMetaData();
-                    this.thead="&lt;table class=\"table table-hover\"&gt;"+
-                    "&lt;thead&gt;&lt;tr align=\"left\"&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;name&lt;/th&gt;&lt;th&gt;value&lt;/th&gt;&lt;th&gt;&lt;/th&gt;"+
-                    "&lt;/tr&gt;&lt;/thead&gt;&lt;tbody id =\"rstable\"&gt;&lt;/tbody&gt;";
+                    this.thead="<table class=\"table table-hover\">"+
+                    "<thead><tr align=\"left\"><th></th><th>name</th><th>value</th><th></th>"+
+                    "</tr></thead><tbody id =\"rstable\"></tbody>";
                     rslist=new ArrayList<String>();
                     jslist=new ArrayList<String>();
                     int row=1;
@@ -250,16 +250,16 @@ public class CQLexec extends ActionSupport{
                     while(rs.next()){
                         if(pagerows>0 && row>=index){
                             String list = null;
-                            String jsstring="<div class=\"cqlrs\">&lt;table class=\"table table-bordered\"&gt;";
-                            list="&lt;tr&gt;&lt;td&gt;"+row+"&lt;/td&gt;&lt;td&gt;"+md.getColumnLabel(1)+"&lt;/td&gt;&lt;td&gt;"+
-                            rs.getString(1)+"&lt;/td&gt;"+
-                            "&lt;td&gt;<a id=\"rs"+row+"\"  rel=\"popover\">显示详细结果</a>&lt;/td&gt;&lt;/tr&gt;";
+                            String jsstring="<div class=\"cqlrs\"><table class=\"table table-bordered\">";
+                            list="<tr><td>"+row+"</td><td>"+md.getColumnLabel(1)+"</td><td>"+
+                            rs.getString(1)+"</td>"+
+                            "<td><a id=\"rs"+row+"\"  rel=\"popover\">显示详细结果</a></td></tr>";
                             
                             int n=md.getColumnCount();
                             for(int i=1;i>=n;i++){
-                                jsstring=jsstring+"&lt;tr&gt;&lt;td&gt;"+md.getColumnLabel(i)+"&lt;/td&gt;&lt;td&gt;"+rs.getString(i)+"&lt;/td&gt;&lt;/tr&gt;";
+                                jsstring=jsstring+"<tr><td>"+md.getColumnLabel(i)+"</td><td>"+rs.getString(i)+"</td></tr>";
                             }
-                            jsstring=jsstring+"&lt;/table&gt;</div>";
+                            jsstring=jsstring+"</table></div>";
                             jsstring="$(\"#rs"+row+"\").popover({content:'"+jsstring+"',placement:'left',html: true});";
                             rslist.add(list);
                             jslist.add(jsstring);
@@ -280,9 +280,9 @@ public class CQLexec extends ActionSupport{
                     statement.execute(str);
                     rs=statement.getResultSet();
                     ResultSetMetaData md =rs.getMetaData();
-                    this.thead="&lt;table class=\"table table-hover\"&gt;"+
-                    "&lt;thead&gt;&lt;tr align=\"left\"&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;name&lt;/th&gt;&lt;th&gt;value&lt;/th&gt;&lt;th&gt;&lt;/th&gt;"+
-                    "&lt;/tr&gt;&lt;/thead&gt;&lt;tbody id =\"rstable\"&gt;&lt;/tbody&gt;";
+                    this.thead="<table class=\"table table-hover\">"+
+                    "<thead><tr align=\"left\"><th></th><th>name</th><th>value</th><th></th>"+
+                    "</tr></thead><tbody id =\"rstable\"></tbody>";
                     rslist=new ArrayList<String>();
                     jslist=new ArrayList<String>();
                     int row=1;
@@ -291,16 +291,16 @@ public class CQLexec extends ActionSupport{
                     while(rs.next()){
                         if(pagerows>0 && row>=index){
                             String list = null;
-                            String jsstring="<div class=\"cqlrs\">&lt;table class=\"table table-bordered\"&gt;";
-                            list="&lt;tr&gt;&lt;td&gt;"+row+"&lt;/td&gt;&lt;td&gt;"+md.getColumnLabel(1)+"&lt;/td&gt;&lt;td&gt;"+
-                            rs.getString(1)+"&lt;/td&gt;"+
-                            "&lt;td&gt;<a id=\"rs"+row+"\"  rel=\"popover\">显示详细结果</a>&lt;/td&gt;&lt;/tr&gt;";
+                            String jsstring="<div class=\"cqlrs\"><table class=\"table table-bordered\">";
+                            list="<tr><td>"+row+"</td><td>"+md.getColumnLabel(1)+"</td><td>"+
+                            rs.getString(1)+"</td>"+
+                            "<td><a id=\"rs"+row+"\"  rel=\"popover\">显示详细结果</a></td></tr>";
                             
                             int n=md.getColumnCount();
                             for(int i=1;i<=n;i++){
-                                jsstring=jsstring+"&lt;tr&gt;&lt;td&gt;"+md.getColumnLabel(i)+"&lt;/td&gt;&lt;td&gt;"+rs.getString(i)+"&lt;/td&gt;&lt;/tr&gt;";
+                                jsstring=jsstring+"<tr><td>"+md.getColumnLabel(i)+"</td><td>"+rs.getString(i)+"</td></tr>";
                             }
-                            jsstring=jsstring+"&lt;/table&gt;</div>";
+                            jsstring=jsstring+"</table></div>";
                             jsstring="$(\"#rs"+row+"\").popover({content:'"+jsstring+"',placement:'left',html: true});";
                             rslist.add(list);
                             jslist.add(jsstring);

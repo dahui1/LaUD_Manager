@@ -6,9 +6,11 @@ import Tools.ClusterManager;
 import com.opensymphony.xwork2.ActionContext;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.apache.cassandra.dht.Token;
+import org.apache.cassandra.tools.NodeProbe;
 import org.apache.thrift.transport.TTransportException;
 
 
@@ -27,22 +29,20 @@ public class ClusterStatics {
         ClusterManager cm;
         Map<String,String> statics;
         List<String> keyspaces;
-        List<String> endpoints = new ArrayList<String>();
         
-        cm = (ClusterManager)session.get("clusterManager");
+        ClusterConnection cn = (ClusterConnection)session.get("conn");
+        cn.connect();
+        cm = new ClusterManager(cn, cn.getHost(), cn.getJmxPort());
         keyspaces = cm.getProbe().getKeyspaces();
-        RingNode ring = cm.listRing();
-        Map<Token, String> rangeMap = ring.getRangeMap();
-        List<Token> t = ring.getRanges();
-        for (Token token : t) {
-            endpoints.add(rangeMap.get(token));
-        }
-        
+        NodeProbe probe;
+        probe = new NodeProbe((String)session.get("ip"), (Integer)session.get("jmx"));
+        Collection<String> liveNodes = probe.getLiveNodes();
+
         Integer thrift = (Integer)session.get("thrift");
         Integer JMX = (Integer)session.get("jmx");
         if (type == "Read Count" || type == "Write Count") {
             int r = 0;
-            for (String ep : endpoints) {
+            for (String ep : liveNodes) {
                 conn = new ClusterConnection(ep, thrift, JMX);
                 try {
                     conn.connect();
@@ -65,7 +65,7 @@ public class ClusterStatics {
         else {
             double r = 0;
             int count = 0;
-            for (String ep : endpoints) {
+            for (String ep : liveNodes) {
                 conn = new ClusterConnection(ep, thrift, JMX);
                 try {
                         conn.connect();

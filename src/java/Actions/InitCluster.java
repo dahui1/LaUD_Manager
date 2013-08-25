@@ -1,5 +1,8 @@
 package Actions;
 
+import ch.ethz.ssh2.Connection;
+import ch.ethz.ssh2.Session;
+import ch.ethz.ssh2.StreamGobbler;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import java.io.BufferedReader;
@@ -7,6 +10,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +33,11 @@ public class InitCluster extends ActionSupport {
     private String rpcport;
     private String seeds;
     private String tokens;
-    private static String base;// = getServlet().getServletContext().getRealPath("/");
+    private String ori_root;
+    private String[] ori_df;
+    private String ori_cl;
+    private String ori_cd;
+    private static String base;
     private static String yamldir;
     private static String tokendir;
 
@@ -43,11 +52,10 @@ public class InitCluster extends ActionSupport {
         tokendir = base +"token";
         System.out.println(base);
         File filename = new File(yamldir);
-        FileReader fileread;
-        fileread = new FileReader(filename);
+        FileReader fileread = new FileReader(filename);
         String read;
         List<String> allread = new ArrayList<String>();
-        String[] datadirs = datafiledir.split(",");
+        String[] datadirs = datafiledir.split(";");
         String[] allseeds = seeds.split(",");
         String[] alltokens = tokens.split(",");
         BufferedReader bufread = new BufferedReader(fileread);
@@ -83,13 +91,20 @@ public class InitCluster extends ActionSupport {
             else if (one.contains("rpc_port"))
                 allread.set(i, "rpc_port: " + rpcport);
         }
+        
+        bufread.close();
+        fileread.close();
+        
+        File f = new File(base + "cassandra.yaml");
+        f.delete();
         if (tokens.equals("")) {
             // Random token, so just send the .yaml file to all seeds.
+
             RandomAccessFile mm;
             try {
                 mm = new RandomAccessFile(base+"cassandra.yaml", "rw");
                 for (String one : allread) {
-                    mm.writeBytes(one + "\r\n");
+                    mm.writeBytes(one + "\n");
                 }
                 mm.close();
                 for (String seed : allseeds) {
@@ -98,7 +113,6 @@ public class InitCluster extends ActionSupport {
                     Runtime run = Runtime.getRuntime();
                     run.exec(cmd);
                 }
-                //mm.writeBytes(allread);
             } catch (IOException e1) {
                 e1.printStackTrace();
             } 
@@ -114,9 +128,9 @@ public class InitCluster extends ActionSupport {
                     for (String one : allread) {
                         if (one.contains("initial_token:")) {
                             one = "initial_token: " + alltokens[i];
-                            tt.writeBytes(alltokens[i++] + "\r\n");
+                            tt.writeBytes(alltokens[i++] + "\n");
                         }
-                        mm.writeBytes(one + "\r\n");
+                        mm.writeBytes(one + "\n");
                     }
                     mm.close();
                     String cmd = "scp " + yamldir +" usdms@" + seed + ":" 
@@ -135,12 +149,85 @@ public class InitCluster extends ActionSupport {
         try {
             back = new RandomAccessFile(yamldir, "rw");
             for (String one : allread) {
-                back.writeBytes(one + "\r\n");
+                back.writeBytes(one + "\n");
             }
             back.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        ori_root = (String)session.get("root");
+        session.put("root", rootdir);
+        ori_df = ((String)session.get("datafiledir")).split(";");
+        ori_cl = (String)session.get("commitlogdir");
+        ori_cd = (String)session.get("cachesdir");
+        
+        //初始化
+        for(int i=0;i<allseeds.length;i++){
+            final String ipstart = allseeds[i].trim();
+            Thread t= new Thread(new Runnable(){
+                
+                @Override
+                public void run() {
+                    System.out.println(ipstart);
+                    String hostname = ipstart;
+                    String username = "usdms";
+                    String password = "hgjusdms";
+                    try
+                    {    	
+                        ch.ethz.ssh2.Connection conn = new Connection(hostname);
+                        conn.connect();
+                        boolean isAuthenticated = conn.authenticateWithPassword(username, password);
+                        if (isAuthenticated == false)
+                            throw new IOException("Authentication failed.");
+                        Session sess = conn.openSession();
+                        Session sess1 = conn.openSession();
+                        Session sess2 = conn.openSession();
+                        Session sess3 = conn.openSession();
+                        String cmd = "";
+                        for (String df : ori_df)
+                            cmd += "rm -r " + df + ";"; 
+                        sess1.execCommand(cmd);
+                        
+                        sess2.execCommand("rm -r " + ori_cl);
+                       
+                        sess3.execCommand("rm -r " + ori_cd);
+                        
+                        sess.execCommand(ori_root + "/cassandra/bin/cassandra");
+                        
+                        System.out.println("Here is some information about the remote host:");
+                        InputStream stdout = new StreamGobbler(sess.getStdout());
+                        BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
+                        while (true)
+                        {
+                            String line = br.readLine();
+                            if (line == null)
+                            break;
+                            System.out.println(line);
+                        }
+	    	
+                        /* Show exit status, if available (otherwise "null") */
+                        System.out.println("ExitCode: " + sess.getExitStatus());
+                        /* Close this session */
+
+                        sess.close();
+                        sess1.close();
+                        sess2.close();
+                        sess3.close();
+                        /* Close the connection */
+
+                        conn.close();
+                    }
+                    catch (IOException e)
+                    {
+                       e.printStackTrace(System.err); 
+                       //System.exit(2);
+                    }
+                }
+            });
+            t.start();
+        }
+        
         return "init";
     }
     

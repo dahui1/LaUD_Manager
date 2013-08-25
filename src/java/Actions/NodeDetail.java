@@ -72,7 +72,9 @@ public class NodeDetail  extends ActionSupport {
     public String execute() throws InterruptedException, TTransportException, IOException {
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
-        setClusterManager((ClusterManager)session.get("clusterManager"));
+        ClusterConnection cn = (ClusterConnection)session.get("conn");
+        cn.connect();
+        setClusterManager(new ClusterManager(cn, cn.getHost(), cn.getJmxPort()));
         RingNode ring = getClusterManager().listRing();
         Map<Token, String> rangeMap = ring.getRangeMap();
         List<Token> t = ring.getRanges();

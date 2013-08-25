@@ -45,7 +45,7 @@ public class OpenLogFile extends ActionSupport{
         Session sess;
         try {
             sess = conn.openSession();
-            sess.execCommand("cat /data1/logcassandra/logs/"+logfilename);
+            sess.execCommand("cat " + GetLog.path +logfilename);
             InputStream stdout = new StreamGobbler(sess.getStdout());
             BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
             logcontent=new ArrayList<String>();

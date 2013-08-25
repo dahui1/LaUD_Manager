@@ -12,10 +12,13 @@
         <action name="Signout" class="Actions.SignoutAction">
             <result name="success" type="redirect">../signin.jsp</result>
         </action>
-
+        <action name="SignoutIndex" class="Actions.SignoutAction">
+            <result name="success" type="redirect">signin.jsp</result>
+        </action>
         <action name ="ConnectDB" class="Actions.ConnectDB" >
             <result name="success" type="redirect">cql.jsp</result>
-           <result name="error" type="redirect">connect.jsp</result>
+            <result name="error" type="redirect">connect.jsp</result>
+            <result name="noip" type="redirect">connect.jsp?noip</result>
         </action>
     </package>
     <package name="default2" extends="json-default"> 
@@ -64,7 +67,13 @@
                 <param name="root">endpoints</param>
             </result>
         </action>
-        
+
+        <action name = "AllEndPoints" class="Actions.GetInfos" method="getAllEps">
+            <result name="endpoints" type="json">
+                <param name="root">endpoints</param>
+            </result>
+        </action>
+                
         <action name = "TPThreads" class="Actions.GetTPNames">
             <result name="tps" type="json">
                 <param name="root">tpnames</param>

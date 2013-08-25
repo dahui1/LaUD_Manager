@@ -182,13 +182,11 @@ public class ClusterManager {
         ni.setToken(token);
         ni.setEndpoint(primaryEndpoint);
         ni.setUptime(probe.getUptime() / 1000);
-        ni.setRange(probe.getToken());
+        ni.setRange(token.toString());
         MemoryUsage heapUsage = probe.getHeapMemoryUsage();
         ni.setMemUsed((double) heapUsage.getUsed() / (1024 * 1024));
         ni.setMemMax((double) heapUsage.getMax() / (1024 * 1024));
         
-        
-    
         String rack;
         try
         {

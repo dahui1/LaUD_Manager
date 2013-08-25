@@ -1,22 +1,21 @@
 $(function () {
-    $(document).ready(function() { 
+    $(document).ready(function () {
         $("#lists").append("<li class=\"nav-header\">Keyspaces</li>");
-        $.ajax({  
-            url:'GetKeyspaces',  
-            type:'POST',  
-            data:"{}",
-            dataType:'json',  
-            success:function (data) { 
-                $(data).each(function (i, value) {  
-                    $("#lists").append("<li><a href=\"#\" onclick=\"getKSDetail('keyspace" + i + "','" + value
-                            + "')\" id=\"keyspace" + i + "\">" + value + "</a></li>");  
+        $.ajax({
+            url: 'GetKeyspaces',
+            type: 'POST',
+            data: "{}",
+            dataType: 'json',
+            success: function (data) {
+                $(data).each(function (i, value) {
+                    $("#lists").append("<li><a href=\"#\" onclick=\"getKSDetail('keyspace" + i + "','" + value + "')\" id=\"keyspace" + i + "\">" + value + "</a></li>");
                     if (i == 0) {
                         document.getElementById("bs").innerHTML = value;
                         getKSDetail("keyspace0", value);
                     }
                 });
             },
-            error:function() {
+            error: function () {
                 alert("服务器连接失败，请稍后尝试！");
                 window.location = "../index.jsp";
             }
@@ -26,12 +25,14 @@ $(function () {
 
 function getKSDetail(id, keyspace) {
     document.getElementById("bs").innerHTML = document.getElementById(id).innerText;
-    $.ajax({  
-        url:'GetCFs',  
-        type:'POST',  
-        data:{"keyspace":keyspace},
-        dataType:'json',  
-        success:function (data) {  
+    $.ajax({
+        url: 'GetCFs',
+        type: 'POST',
+        data: {
+            "keyspace": keyspace
+        },
+        dataType: 'json',
+        success: function (data) {
             document.getElementById("strategy").innerHTML = data.strategy_class;
             document.getElementById("replication").innerHTML = data.replication_factor;
             document.getElementById("CFS").innerHTML = null;
@@ -39,9 +40,9 @@ function getKSDetail(id, keyspace) {
                 var value = data.cfs[i];
                 var meta = data.cd[i];
                 $("#CFS").append(
-                    "<div class=\"accordion-group\"><div class=\"accordion-heading\">" + 
-                    "<a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent='#CFS' href='#cf"+i+"'>" +
-                    value.name + "</a></div><div id='cf"+i+"'class='accordion-body collapse'>" +
+                    "<div class=\"accordion-group\"><div class=\"accordion-heading\">" +
+                    "<a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent='#CFS' href='#cf" + i + "'>" +
+                    value.name + "</a></div><div id='cf" + i + "'class='accordion-body collapse'>" +
                     "<div class=\"accordion-inner\"><h5>Parameters</h5><table class=\"table table-bordered\"><tbody>" +
                     "<tr><td>Column Type</td><td>" + value.column_type + "</td></tr>" +
                     "<tr><td>Key Validation Class</td><td>" + value.key_validation_class + "</td></tr>" +
@@ -62,7 +63,7 @@ function getKSDetail(id, keyspace) {
                     "<tr><td>Bloom Filter FP Chance</td><td>" + value.bloom_filter_fp_chance + "</td></tr>" +
                     "</tbody></table><hr><h5>Column MetaData</h5><table class=\"table table-bordered\">" +
                     "<thead><tr><th>Column Name</th><th>Validation Class</th><th>Index Name</th><th>Index Type</th>" +
-                    "</tr></thead><tbody id='cfi"+i+"'></tbody></table></div></div></div>");
+                    "</tr></thead><tbody id='cfi" + i + "'></tbody></table></div></div></div>");
                 for (var j = 0; j < meta.length; j++) {
                     var name = "";
                     var index_name, index_type;
@@ -76,14 +77,14 @@ function getKSDetail(id, keyspace) {
                         index_type = "";
                     else
                         index_type = meta[j].index_type;
-                    $("#cfi"+i).append(
-                        "<tr><td>" + name + "</td><td>" + meta[j].validation_class + 
+                    $("#cfi" + i).append(
+                        "<tr><td>" + name + "</td><td>" + meta[j].validation_class +
                         "</td><td>" + index_name + "</td><td>" + index_type + "</td></tr>");
                 }
                 i++;
             }
         },
-        error:function() {
+        error: function () {
             alert("服务器连接失败，请稍后尝试！");
             window.location = "../index.jsp";
         }

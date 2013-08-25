@@ -64,7 +64,9 @@ public class NodeStatus extends ActionSupport {
     public String execute() throws Exception {
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
-        setClusterManager((ClusterManager)session.get("clusterManager"));
+        ClusterConnection cn = (ClusterConnection)session.get("conn");
+        cn.connect();
+        setClusterManager(new ClusterManager(cn, cn.getHost(), cn.getJmxPort()));
         RingNode ring = getClusterManager().listRing();
         Map<Token, String> rangeMap = ring.getRangeMap();
         List<Token> t = ring.getRanges();
@@ -74,7 +76,6 @@ public class NodeStatus extends ActionSupport {
             try {
                 nodeInfo = getClusterManager().getNodeInfo(primaryEndpoint, token);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             assertEquals(primaryEndpoint, nodeInfo.getEndpoint());

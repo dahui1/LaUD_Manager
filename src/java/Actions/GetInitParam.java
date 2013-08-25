@@ -24,7 +24,7 @@ public class GetInitParam extends ActionSupport {
     private String commitlogdir;
     private String cachesdir;
     private String rpcport;
-    private List<String> seeds;
+    private String[] seeds;
     private List<String> tokens = new ArrayList<String>();
     private static String base;
     private static String yamldir;
@@ -78,11 +78,11 @@ public class GetInitParam extends ActionSupport {
         this.rpcport = rpcport;
     }
 
-    public List<String> getSeeds() {
+    public String[] getSeeds() {
         return seeds;
     }
 
-    public void setSeeds(List<String> seeds) {
+    public void setSeeds(String[] seeds) {
         this.seeds = seeds;
     }
 
@@ -93,6 +93,60 @@ public class GetInitParam extends ActionSupport {
     public void setTokens(List<String> tokens) {
         this.tokens = tokens;
     }
+    
+    public void getConfig() throws FileNotFoundException, IOException {
+        ServletContext sc = ServletActionContext.getServletContext();  
+        String path = sc.getRealPath("/");
+        String read;
+        FileReader fileread = new FileReader(path + "config/cassandra.yaml");
+        BufferedReader bufread = new BufferedReader(fileread);
+        
+        String cn = null, df = null, cl = null, 
+                cd = null, rp = null;
+        String[] seed = null;
+        while ((read = bufread.readLine()) != null) {
+            if (read.trim().startsWith("#"))
+                continue;
+            if (read.contains("cluster_name")) {
+                cn = read.substring("cluster_name:".length()).trim();
+                cn = cn.substring(1, cn.length()-1);
+            }
+            else if (read.contains("data_file_directories")) {
+                read = bufread.readLine();
+                df = "";
+                while (read.contains(" - ")) {
+                    df += read.substring(read.lastIndexOf("-") + 1).trim();
+                    df += ";";
+                    read = bufread.readLine();
+                }
+                df = df.substring(0, df.length()-1).trim();
+            }
+            else if (read.contains("commitlog_directory")) {
+                cl = read.substring("commitlog_directory:".length()).trim();
+            }
+            else if (read.contains("saved_caches_directory")) {
+                cd = read.substring("saved_caches_directory: ".length()).trim();
+            }
+            else if (read.contains("seeds:")){
+                int index = read.lastIndexOf("seeds:") + "seeds:".length() + 2;
+                String temp = read.substring(index).trim();
+                seed = temp.split(",");
+                seed[seed.length-1] = seed[seed.length-1]
+                        .substring(0, seed[seed.length-1].length()-1);
+            }
+            else if (read.contains("rpc_port")) {
+                rp = read.substring("rpc_port:".length()).trim();
+            }
+        }
+        ActionContext actionContext = ActionContext.getContext();
+        Map session = actionContext.getSession();
+        session.put("clustername", cn);
+        session.put("datafiledir", df);
+        session.put("commitlogdir", cl);
+        session.put("cachesdir", cd);
+        session.put("rpcport", rp);
+        session.put("seeds", seed);
+    }
 
     @Override
     public String execute() throws FileNotFoundException, IOException {
@@ -102,38 +156,24 @@ public class GetInitParam extends ActionSupport {
         ServletContext sc = ServletActionContext.getServletContext();  
         String path = sc.getRealPath("/");
         base = path + "/config/";
-        yamldir = base + "cassandra_server.yaml";
+        yamldir = base + "cassandra.yaml";
         tokendir = base +"token";
-        File filename = new File(base+"config");
-        FileReader fileread;
-        fileread = new FileReader(filename);
-        String read;
+        
+        getConfig();
+
+        seeds = (String[])session.get("seeds");
+        rootdir = (String)session.get("root");
+        clustername = (String)session.get("clustername");
+        datafiledir = (String)session.get("datafiledir");
+        commitlogdir = (String)session.get("commitlogdir");
+        cachesdir = (String)session.get("cachesdir");
+        rpcport = (String)session.get("rpcport");
+       
+        File filename = new File(tokendir);
+        FileReader fileread = new FileReader(filename);
         BufferedReader bufread = new BufferedReader(fileread);
-
         try {
-            seeds = new ArrayList<String>();
-            rootdir = bufread.readLine();
-            clustername = bufread.readLine();
-            datafiledir = bufread.readLine();
-            commitlogdir = bufread.readLine();
-            cachesdir = bufread.readLine();
-            rpcport = bufread.readLine();
-            while ((read = bufread.readLine()) != null) {
-                seeds.add(read);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        bufread.close();
-        fileread.close();
-        
-        filename = new File(tokendir);
-        System.out.println(tokendir);
-        fileread = new FileReader(filename);
-        bufread = new BufferedReader(fileread);
-        try {
+            String read;
             while ((read = bufread.readLine()) != null) {
                 if (read == "")
                     tokens = null;

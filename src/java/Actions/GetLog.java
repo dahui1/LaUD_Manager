@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public class GetLog extends ActionSupport{
     private String ip;
+    static String path;
     
     private List<String> loglist;
 
@@ -38,10 +39,17 @@ public class GetLog extends ActionSupport{
         this.ip = ip;
     }
     
-    String path="/data1/logcassandra/logs/";
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+    
     String username = "usdms";
-     String password = "hgjusdms";
-     ch.ethz.ssh2.Connection conn;
+    String password = "hgjusdms";
+    ch.ethz.ssh2.Connection conn;
      
     @Override
     public String execute(){
@@ -58,7 +66,7 @@ public class GetLog extends ActionSupport{
             Map session = actionContext.getSession();
             session.put("logconnection",conn);
             Session sess = conn.openSession();
-            sess.execCommand("ls "+path);
+            sess.execCommand("ls "+getPath());
 
             InputStream stdout = new StreamGobbler(sess.getStdout());
             BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
@@ -86,4 +94,5 @@ public class GetLog extends ActionSupport{
         }
         return "getloglist";
     }
+
 }

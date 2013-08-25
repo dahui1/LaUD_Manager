@@ -9,11 +9,13 @@ import com.opensymphony.xwork2.ActionContext;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import org.apache.cassandra.dht.Token;
 import org.apache.cassandra.thrift.CfDef;
 import org.apache.cassandra.thrift.InvalidRequestException;
 import org.apache.cassandra.thrift.KsDef;
+import org.apache.cassandra.tools.NodeProbe;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
@@ -71,7 +73,9 @@ public class GetInfos extends ActionSupport{
     public void checkCM ()  throws InterruptedException, IOException, TTransportException  {
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
-        setClusterManager((ClusterManager)session.get("clusterManager"));
+        ClusterConnection cn = (ClusterConnection)session.get("conn");
+        cn.connect();
+        setClusterManager(new ClusterManager(cn, cn.getHost(), cn.getJmxPort()));
     }
     
     public String getKSs() throws InterruptedException, IOException, TTransportException{
@@ -81,6 +85,20 @@ public class GetInfos extends ActionSupport{
     }
     
     public String getEps() throws TTransportException, IOException, InterruptedException {
+        NodeProbe probe;
+        ActionContext actionContext = ActionContext.getContext();
+        Map session = actionContext.getSession();
+        probe = new NodeProbe((String)session.get("ip"), (Integer)session.get("jmx"));
+        Collection<String> liveNodes = probe.getLiveNodes();
+
+        endpoints = new ArrayList<String>();
+        for (String ep : liveNodes) {
+            endpoints.add(ep);
+        }
+        return "endpoints";
+    }
+    
+    public String getAllEps() throws TTransportException, IOException, InterruptedException {
         checkCM();
         RingNode ring = getClusterManager().listRing();
         Map<Token, String> rangeMap = ring.getRangeMap();

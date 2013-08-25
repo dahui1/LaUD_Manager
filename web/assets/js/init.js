@@ -1,11 +1,11 @@
 $(function () {
-    $(document).ready(function() { 
-        $.ajax({  
-            url:'GetParams',  
-            type:'POST',  
-            data:"{}",
-            dataType:'json',  
-            success:function (data) { 
+    $(document).ready(function () {
+        $.ajax({
+            url: 'GetParams',
+            type: 'POST',
+            data: "{}",
+            dataType: 'json',
+            success: function (data) {
                 document.getElementById("inputRoot").value = data.rootdir;
                 document.getElementById("inputName").value = data.clustername;
                 document.getElementById("inputDataDir").value = data.datafiledir;
@@ -17,19 +17,14 @@ $(function () {
                     $("#seeds").append("<thead><tr><th>Seeds</th></tr></thead><tbody>");
                     for (var i = 0; i < data.seeds.length; i++) {
                         $("#seeds").append("<tr><td><input type=text class=\"form-control input-xlarge\"" +
-                            "id='seeds" + i + "' placeholder='Seeds-" + (i+1) + "' value='" +
+                            "id='seeds" + i + "' placeholder='Seeds-" + (i + 1) + "' value='" +
                             data.seeds[i] + "'></td><tr>")
                     }
-                }
-                else {
+                } else {
                     document.getElementById("tokenMethod").value = "指定Token";
                     $("#seeds").append("<thead><tr><th>Seeds</th><th>Tokens</th></tr></thead><tbody>");
                     for (var i = 0; i < data.seeds.length; i++) {
-                        $("#seeds").append("<tr><td><input type=text class=\"form-control input-medium\""
-                            + "id='seeds" + i + "' placeholder='Seeds-" + (i+1) + "' value='"
-                            + data.seeds[i] + "'></td><td>  <input type=text class=\"form-control input-xlarge\""
-                            + "id='tokens" + i + "' placeholder='Tokens-" + (i+1) + "' value='"
-                            + data.tokens[i] + "'></td></tr>")
+                        $("#seeds").append("<tr><td><input type=text class=\"form-control input-medium\"" + "id='seeds" + i + "' placeholder='Seeds-" + (i + 1) + "' value='" + data.seeds[i] + "'></td><td>  <input type=text class=\"form-control input-xlarge\"" + "id='tokens" + i + "' placeholder='Tokens-" + (i + 1) + "' value='" + data.tokens[i] + "'></td></tr>")
                     }
                 }
                 $("#seeds").append("</tbody>");
@@ -47,17 +42,12 @@ function showTable() {
     if (document.getElementById("tokenMethod").value == "随机生成Token") {
         $("#seeds").append("<thead><tr><th>Seeds</th></tr></thead><tbody>");
         for (var i = 0; i < count; i++) {
-            $("#seeds").append("<tr><td><input type=text class=\"form-control input-xlarge\""
-                + "id='seeds" + i + "' placeholder='Seeds-" + (i+1) + "'></td><tr>")
+            $("#seeds").append("<tr><td><input type=text class=\"form-control input-xlarge\"" + "id='seeds" + i + "' placeholder='Seeds-" + (i + 1) + "'></td><tr>")
         }
-    }
-    else {
+    } else {
         $("#seeds").append("<thead><tr><th>Seeds</th><th>Tokens</th></tr></thead><tbody>");
         for (var i = 0; i < count; i++) {
-            $("#seeds").append("<tr><td>  <input type=text class=\"form-control input-medium\""
-                + "id='seeds" + i + "' placeholder='Seeds-" + (i+1) + "'>  </td>"
-                + "<td>  <input type=text class=\"form-control input-xlarge\""
-                + "id='tokens" + i + "' placeholder='Tokens-" + (i+1) + "'></td></tr>")
+            $("#seeds").append("<tr><td>  <input type=text class=\"form-control input-medium\"" + "id='seeds" + i + "' placeholder='Seeds-" + (i + 1) + "'>  </td>" + "<td>  <input type=text class=\"form-control input-xlarge\"" + "id='tokens" + i + "' placeholder='Tokens-" + (i + 1) + "'></td></tr>")
         }
     }
     $("#seeds").append("</tbody>");
@@ -74,51 +64,49 @@ function submitInitParam() {
     var seeds = "";
     var tokens = "";
     if (isNaN(count)) {
-        alert ("请输入种子数！");
+        alert("请输入种子数！");
         return;
     }
     if (document.getElementById("tokenMethod").value == "随机生成Token") {
         for (var i = 0; i < count; i++) {
-            if (document.getElementById("seeds"+i).value == null) {
+            if (document.getElementById("seeds" + i).value == null) {
                 alert("请填写所有空格后再提交！")
                 return;
             }
-            seeds += document.getElementById("seeds"+i).value;
+            seeds += document.getElementById("seeds" + i).value;
             if (i !== count - 1)
                 seeds += ",";
         }
-    }
-    else {
+    } else {
         for (var i = 0; i < count; i++) {
-            if (document.getElementById("seeds"+i).value == null 
-                    || document.getElementById("tokens"+i).value == null) {
+            if (document.getElementById("seeds" + i).value == null || document.getElementById("tokens" + i).value == null) {
                 alert("请填写所有空格后再提交！")
                 return;
-            }            
-            seeds += document.getElementById("seeds"+i).value;
-            tokens += document.getElementById("tokens"+i).value;
+            }
+            seeds += document.getElementById("seeds" + i).value;
+            tokens += document.getElementById("tokens" + i).value;
             if (i !== count - 1) {
                 seeds += ",";
                 tokens += ",";
             }
         }
     }
-    
-    $.ajax({  
-        url:'InitCluster',  
-        type:'POST',  
-        data:{"rootdir":rootdir,
-              "clustername":clustername,
-              "datafiledir":datafiledir,
-              "commitlogdir":commitlogdir,
-              "cachesdir":cachesdir,
-              "rpcport":rpcport,
-              "seeds":seeds,
-              "tokens":tokens},
-        dataType:'json',  
-        success:function (data) {   
-
+    alert("初始化需要一定时间，请稍等……");
+    $.ajax({
+        url: 'InitCluster',
+        type: 'POST',
+        data: {
+            "rootdir": rootdir,
+            "clustername": clustername,
+            "datafiledir": datafiledir,
+            "commitlogdir": commitlogdir,
+            "cachesdir": cachesdir,
+            "rpcport": rpcport,
+            "seeds": seeds,
+            "tokens": tokens
+        },
+        dataType: 'json',
+        success: function (data) {
         }
     });
 }
-
