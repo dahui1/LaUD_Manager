@@ -29,59 +29,47 @@ import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
 /**
- * file:Client.java
- *this class use cassandra client, connect ,disconnect, get keyspace ...
+ * file: ClusterConnection.java
+ * this class use cassandra client, connect ,disconnect, get keyspace ...
  * created at:11-03-2012
  * @author 林丹
  * */
-public class ClusterConnection{
-    public static final String DEFAULT_THRIFT_HOST = "localhost";
-    public static final int DEFAULT_THRIFT_PORT = 9170;
-    public static final int DEFAULT_JMX_PORT = 7199;
-  
+public class ClusterConnection{ 
     private TTransport transport;
     private TProtocol protocol;
+    
     public Client getClient() {
-		return client;
-	}
+        return client;
+    }
 
-	public void setClient(Client client) {
-		this.client = client;
-	}
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
-	private Client client;
+    private Client client;
     private NodeProbe probe;
 
     private boolean connected = false;
+    
     public String getHost() {
-		return host;
-	}
+        return host;
+    }
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public int getThriftPort() {
-		return thriftPort;
-	}
+    public int getThriftPort() {
+        return thriftPort;
+    }
 
-	public void setThriftPort(int thriftPort) {
-		this.thriftPort = thriftPort;
-	}
+    public void setThriftPort(int thriftPort) {
+        this.thriftPort = thriftPort;
+    }
 
-	private String host;
+    private String host;
     private int thriftPort;
     private int jmxPort;
-
- 
-
-    public ClusterConnection() {
-        this(DEFAULT_THRIFT_HOST, DEFAULT_THRIFT_PORT, DEFAULT_JMX_PORT);
-    }
-
-    public ClusterConnection(String host) {
-        this(host, DEFAULT_THRIFT_PORT, DEFAULT_JMX_PORT);
-    }
 
     public ClusterConnection(String host, int thriftPort, int jmxPort) {
         this.host = host;
@@ -89,6 +77,7 @@ public class ClusterConnection{
         this.jmxPort = jmxPort;
     }
 
+    // 连接指定的机器
     public void connect() throws IOException, InterruptedException, TTransportException{
         if (!connected) {
             // Updating the transport to Framed one as it has been depreciated with Cassandra 0.7.0
@@ -96,12 +85,12 @@ public class ClusterConnection{
             protocol = new TBinaryProtocol(transport);
             client = new Client(protocol);
             setProbe(new NodeProbe(host, jmxPort));
-			transport.open();
-           
+            transport.open();
             connected = true;
         }
     }
-
+    
+    // 断开指定的机器
     public void disconnect() {
         if (connected) {
             transport.close();
@@ -113,20 +102,19 @@ public class ClusterConnection{
         return connected;
     }
 
-  
-	public NodeProbe getProbe() {
-		return probe;
-	}
+    public NodeProbe getProbe() {
+        return probe;
+    }
 
-	public void setProbe(NodeProbe probe) {
-		this.probe = probe;
-	}
-	public int getJmxPort() {
-		return jmxPort;
-	}
+    public void setProbe(NodeProbe probe) {
+        this.probe = probe;
+    }
+    
+    public int getJmxPort() {
+        return jmxPort;
+    }
 
-	public void setJmxPort(int jmxPort) {
-		this.jmxPort =  jmxPort;
-	}
-  
+    public void setJmxPort(int jmxPort) {
+        this.jmxPort =  jmxPort;
+    }
 }

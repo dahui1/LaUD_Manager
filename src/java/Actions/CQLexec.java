@@ -1,11 +1,8 @@
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
-*/
 package Actions;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -17,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
-*
+* 该类用作处理CQL查询请求。
 * @author Wx
 */
 public class CQLexec extends ActionSupport{
@@ -128,29 +125,25 @@ public class CQLexec extends ActionSupport{
     
     @Override
     public String execute() {
-        
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
         java.sql.Connection con=(java.sql.Connection) session.get("connection");
-        // System.out.println(getCqlstring());
         String[] cql=(getCqlstring().trim()).split(";\n");
         Statement statement;
         ResultSet rs = null;
         String selectstring = null;
         if(con!=null){
             try {
-                
+                //显示第一页查询结果
                 if(getTypestring().equals("firstpage")){
                     statement = con.createStatement();
                     for(int i=0;i<cql.length;i++){
                         statement.execute(cql[i].trim());
-                        System.out.println( cql[i].trim()+" success");
+                        //获取最后一句select语句
                         if(cql[i].trim().substring(0, 6).equalsIgnoreCase("select")){
-                            
                             rs=statement.getResultSet();
                             selectstring=cql[i].trim();
                         }
-                        
                     }
                     if(rs!=null){
                         ResultSetMetaData md =rs.getMetaData();
@@ -184,6 +177,7 @@ public class CQLexec extends ActionSupport{
                         }
                         totalpage=(row-1)/10;
                         if((row-1)%10!=0){totalpage++;}
+                        //保存最后一个select语句
                         session.put("selectstring", selectstring);
                         currentpage=1;
                         rs.close();
@@ -192,8 +186,10 @@ public class CQLexec extends ActionSupport{
                     
                 }
                 
+                //显示下一页查询结果
                 if(getTypestring().equals("next")){
                     statement = con.createStatement();
+                    //获取Session中之前保存的select语句
                     String str=(String) session.get("selectstring");
                     statement.execute(str);
                     rs=statement.getResultSet();
@@ -233,6 +229,7 @@ public class CQLexec extends ActionSupport{
                     
                 }
                 
+                //显示前一页查询结果
                 if(getTypestring().equals("previous")){
                     statement = con.createStatement();
                     String str=(String) session.get("selectstring");
@@ -274,6 +271,7 @@ public class CQLexec extends ActionSupport{
                     
                 }
                 
+                //跳转页面
                 if(getTypestring().equals("goto")){
                     statement = con.createStatement();
                     String str=(String) session.get("selectstring");

@@ -29,31 +29,19 @@ public class RingNode implements Serializable {
 
     private Map<Token, String> rangeMap;
     private List<Token> ranges;
-   
-    /**
-     * @return the rangeMap
-     */
+
     public Map<Token, String> getRangeMap() {
         return rangeMap;
     }
 
-    /**
-     * @param map the rangeMap to set
-     */
     public void setRangeMap(Map<Token, String> map) {
         this.rangeMap = map;
     }
 
-    /**
-     * @return the ranges
-     */
     public List<Token> getRanges() {
         return ranges;
     }
 
-    /**
-     * @param ranges the ranges to set
-     */
     public void setRanges(List<Token> ranges) {
         this.ranges = ranges;
     }

@@ -2,16 +2,18 @@ package Actions;
 
 import Tools.ClusterConnection;
 import Tools.ClusterManager;
-import com.opensymphony.xwork2.ActionContext;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+
 import java.io.IOException;
 import java.util.Map;
+
 import org.apache.thrift.transport.TTransportException;
 
 
 /**
- *
+ * 该类用作处理获取指定Keyspace实时监控数据的请求。
  * @author yeyh10
  */
 public class KSStatics extends ActionSupport {
@@ -22,7 +24,6 @@ public class KSStatics extends ActionSupport {
     private String result;
     private String type;
     private String ip;
-
 
     public String getResult() {
         return result;
@@ -92,9 +93,10 @@ public class KSStatics extends ActionSupport {
         try {
             getConn().connect();
         } catch (TTransportException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        // 通过JMX获取对应Keyspace的数据
         setClusterManager(new ClusterManager( getConn(), getConn().getHost(), getConn().getJmxPort()));
         setStatics(getClusterManager().getKeyspaceStatics(getKeyspace()));
         setResult(getStatics().get(type).toString());

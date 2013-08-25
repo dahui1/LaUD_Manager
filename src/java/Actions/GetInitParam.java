@@ -14,7 +14,7 @@ import javax.servlet.ServletContext;
 import org.apache.struts2.ServletActionContext;
 
 /**
- *
+ * 该类用作处理获取初始化之前原来集群配置信息的请求。
  * @author yeyh10
  */
 public class GetInitParam extends ActionSupport {
@@ -95,12 +95,14 @@ public class GetInitParam extends ActionSupport {
     }
     
     public void getConfig() throws FileNotFoundException, IOException {
+        // 打开从输入IP端获取的yaml配置文件
         ServletContext sc = ServletActionContext.getServletContext();  
         String path = sc.getRealPath("/");
         String read;
         FileReader fileread = new FileReader(path + "config/cassandra.yaml");
         BufferedReader bufread = new BufferedReader(fileread);
         
+        // 读取yaml文件，并从中获取需要的配置信息
         String cn = null, df = null, cl = null, 
                 cd = null, rp = null;
         String[] seed = null;
@@ -138,6 +140,8 @@ public class GetInitParam extends ActionSupport {
                 rp = read.substring("rpc_port:".length()).trim();
             }
         }
+        
+        //将获取的配置信息放入session中，供后续使用
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
         session.put("clustername", cn);
@@ -161,6 +165,7 @@ public class GetInitParam extends ActionSupport {
         
         getConfig();
 
+        // 获取之前的配置信息
         seeds = (String[])session.get("seeds");
         rootdir = (String)session.get("root");
         clustername = (String)session.get("clustername");
@@ -169,6 +174,7 @@ public class GetInitParam extends ActionSupport {
         cachesdir = (String)session.get("cachesdir");
         rpcport = (String)session.get("rpcport");
        
+        // 读取token
         File filename = new File(tokendir);
         FileReader fileread = new FileReader(filename);
         BufferedReader bufread = new BufferedReader(fileread);

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package Actions;
 
 import Node.RingNode;
@@ -25,7 +21,7 @@ import org.apache.cassandra.dht.Token;
 import org.apache.thrift.transport.TTransportException;
 
 /**
- *
+ * 该类用作处理连接数据库和断开连接的请求。
  * @author Wx
  */
 public class ConnectDB extends ActionSupport{
@@ -66,12 +62,13 @@ public class ConnectDB extends ActionSupport{
         for (Token token : t) {
             endpoints.add(rangeMap.get(token));
         }
+        // 判断输入的IP是否在集群当中
         if (!endpoints.contains(ip))
             return "noip";
         
         String host=System.getProperty("url","jdbc:laud://"+ip+":"+port+
                 "?data_port=9091&support_function=true&hive=false");
-        System.out.println(host);
+        // 调用LaUD的JDBC连接数据库
         try {
             Class.forName("cn.edu.thu.laud.jdbc.LaUDDriver");
             con = DriverManager.getConnection(host, "", "");
@@ -93,12 +90,11 @@ public class ConnectDB extends ActionSupport{
     public String  disconnect(){
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
+        // 获取Session中保存之前的连接，将其关闭后再从Session中清除
         java.sql.Connection con=(java.sql.Connection) session.get("connection");
         if(con!=null){
             try {
                 con.close();
-                System.out.println(((java.sql.Connection) session.get("connection")).isClosed());
-                System.out.println("con is closed!");
                 session.remove("connection");
                 session.remove("connected");
             } catch (SQLException ex) {

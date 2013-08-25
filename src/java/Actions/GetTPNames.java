@@ -10,7 +10,7 @@ import java.util.Map;
 import org.apache.thrift.transport.TTransportException;
 
 /**
- *
+ * 该类用作处理获取线程池名字的请求。
  * @author yeyh10
  */
 public class GetTPNames extends ActionSupport{
@@ -63,9 +63,9 @@ public class GetTPNames extends ActionSupport{
         try {
             getConn().connect();
         } catch (TTransportException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        // 获取指定IP的机器中的线程池列表
         setDataManager(new DataManager(getConn()));
         setTpnames(getDataManager().getTpnames(ip));
         return "tps";

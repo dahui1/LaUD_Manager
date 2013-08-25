@@ -9,7 +9,7 @@ import java.io.IOException;
 import javax.servlet.ServletContext;
 import org.apache.struts2.ServletActionContext;
 /**
- *
+ * 该类用作处理登录的请求。
  * @author yeyh10
  */
 public class SigninAction extends ActionSupport{
@@ -20,55 +20,6 @@ public class SigninAction extends ActionSupport{
     private Integer jmx;
     private String root;
     private ClusterConnection conn;
-
-    public boolean fetchYaml(String root) throws IOException {
-        String path = root + "/cassandra/conf/cassandra.yaml";
-        ServletContext sc = ServletActionContext.getServletContext();  
-        String localpath = sc.getRealPath("/");
-        String base = localpath + "config/";
-        String cmd = "scp usdms@" + getIp() + ":" + path + " " + base;
-        File file = new File(base + "cassandra.yaml");
-        if (file.exists())
-            file.delete();
-        Runtime run = Runtime.getRuntime();
-        run.exec(cmd);
-        return true;
-    }
-    
-    /**
-     *
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public String execute() throws Exception {
-        ActionContext actionContext = ActionContext.getContext();
-        Map session = actionContext.getSession();
-        if (session.get("user") != null) {
-            return SUCCESS;
-        }
-        if (getUsername().equals("user") && getPassword().equals("123456")) {
-            fetchYaml(root);
-            if (InitCluster.isInited() == true) {
-                session.put("inited", "true");
-            }
-            else {
-                session.put("inited", "false");
-                return SUCCESS;
-            }
-            setConn(new ClusterConnection(ip, thrift, jmx));
-            session.put("conn", getConn());
-            session.put("user", "user");
-            session.put("ip", ip);
-            session.put("thrift", thrift);
-            session.put("jmx", jmx);
-            session.put("root", getRoot());
-            return SUCCESS;
-        }
-        else {
-            return ERROR;
-        }
-    }
 
     public String getRoot() {
         return root;
@@ -124,5 +75,58 @@ public class SigninAction extends ActionSupport{
 
     public void setConn(ClusterConnection conn) {
         this.conn = conn;
+    }
+    
+    // 从用户指定的IP和指定的路径下获取当前集群的yaml配置文件
+    public boolean fetchYaml(String root) throws IOException {
+        String path = root + "/cassandra/conf/cassandra.yaml";
+        ServletContext sc = ServletActionContext.getServletContext();  
+        String localpath = sc.getRealPath("/");
+        String base = localpath + "config/";
+        String cmd = "scp usdms@" + getIp() + ":" + path + " " + base;
+        File file = new File(base + "cassandra.yaml");
+        if (file.exists())
+            file.delete();
+        Runtime run = Runtime.getRuntime();
+        run.exec(cmd);
+        return true;
+    }
+    
+    /**
+     *
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public String execute() throws Exception {
+        ActionContext actionContext = ActionContext.getContext();
+        Map session = actionContext.getSession();
+        if (session.get("user") != null) {
+            return SUCCESS;
+        }
+        // 验证密码
+        if (getUsername().equals("user") && getPassword().equals("123456")) {
+            fetchYaml(root);
+            if (InitCluster.isInited() == true) {
+                session.put("inited", "true");
+            }
+            else {
+                session.put("inited", "false");
+                return SUCCESS;
+            }
+            
+            // 将用户输入信息保存到Session中
+            setConn(new ClusterConnection(ip, thrift, jmx));
+            session.put("conn", getConn());
+            session.put("user", "user");
+            session.put("ip", ip);
+            session.put("thrift", thrift);
+            session.put("jmx", jmx);
+            session.put("root", getRoot());
+            return SUCCESS;
+        }
+        else {
+            return ERROR;
+        }
     }
 }

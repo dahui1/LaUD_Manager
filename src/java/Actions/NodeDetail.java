@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
- *
+ * 该类用作处理获取某节点详细信息的请求。
  * @author yeyh10
  */
 public class NodeDetail  extends ActionSupport {
@@ -82,6 +82,7 @@ public class NodeDetail  extends ActionSupport {
             String primaryEndpoint = rangeMap.get(token);
             if (!primaryEndpoint.equals(endPoint))
                 continue;
+            // 当token为指定endpoint的token时，返回其详细信息
             info = null;
             try {
                 info = getClusterManager().getNodeInfo(primaryEndpoint, token);

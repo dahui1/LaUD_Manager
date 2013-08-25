@@ -3,8 +3,10 @@ package Actions;
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,11 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
+
 import org.apache.struts2.ServletActionContext;
 
 /**
- *
- * @author yeyh10
+ * 该类用作处理初始化集群的请求。
+ * @author yeyh10 
  */
 public class InitCluster extends ActionSupport {
     private static boolean inited  = true;
@@ -58,6 +61,8 @@ public class InitCluster extends ActionSupport {
         String[] datadirs = datafiledir.split(";");
         String[] allseeds = seeds.split(",");
         String[] alltokens = tokens.split(",");
+        
+        // 读取yaml文件，并将对应的数值修改为用户指定的新数值
         BufferedReader bufread = new BufferedReader(fileread);
         try {
             while ((read = bufread.readLine()) != null) {
@@ -97,6 +102,8 @@ public class InitCluster extends ActionSupport {
         
         File f = new File(base + "cassandra.yaml");
         f.delete();
+        
+        // 不指定token时，只需要将yaml文件分发给各seed
         if (tokens.equals("")) {
             // Random token, so just send the .yaml file to all seeds.
 
@@ -117,6 +124,8 @@ public class InitCluster extends ActionSupport {
                 e1.printStackTrace();
             } 
         }
+        
+        // 指定token时，将initial_token域修改为用户指定的token后再将yaml文件分发给各seed
         else {
             int i = 0;
             RandomAccessFile tt;
@@ -162,7 +171,7 @@ public class InitCluster extends ActionSupport {
         ori_cl = (String)session.get("commitlogdir");
         ori_cd = (String)session.get("cachesdir");
         
-        //初始化
+        // 将原先的数据等文件删除后，重新开启cassandra
         for(int i=0;i<allseeds.length;i++){
             final String ipstart = allseeds[i].trim();
             Thread t= new Thread(new Runnable(){
@@ -195,6 +204,7 @@ public class InitCluster extends ActionSupport {
                         
                         sess.execCommand(ori_root + "/cassandra/bin/cassandra");
                         
+                        // 输出系统返回信息
                         System.out.println("Here is some information about the remote host:");
                         InputStream stdout = new StreamGobbler(sess.getStdout());
                         BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
@@ -208,14 +218,14 @@ public class InitCluster extends ActionSupport {
 	    	
                         /* Show exit status, if available (otherwise "null") */
                         System.out.println("ExitCode: " + sess.getExitStatus());
+                        
                         /* Close this session */
-
                         sess.close();
                         sess1.close();
                         sess2.close();
                         sess3.close();
+                        
                         /* Close the connection */
-
                         conn.close();
                     }
                     catch (IOException e)

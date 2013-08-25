@@ -14,14 +14,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * 该类用作处理获取日志列表的请求。
  * @author Wx
  */
 public class GetLog extends ActionSupport{
     private String ip;
     static String path;
-    
     private List<String> loglist;
+    
+    String username = "usdms";
+    String password = "hgjusdms";
+    ch.ethz.ssh2.Connection conn;
 
     public List<String> getLoglist() {
         return loglist;
@@ -46,10 +49,6 @@ public class GetLog extends ActionSupport{
     public void setPath(String path) {
         this.path = path;
     }
-    
-    String username = "usdms";
-    String password = "hgjusdms";
-    ch.ethz.ssh2.Connection conn;
      
     @Override
     public String execute(){
@@ -57,6 +56,7 @@ public class GetLog extends ActionSupport{
 
         try
         {    	
+            // 通过session连接，获取Log列表
             conn = new Connection(hostname);
             conn.connect();
             boolean isAuthenticated = conn.authenticateWithPassword(username, password);
@@ -68,6 +68,7 @@ public class GetLog extends ActionSupport{
             Session sess = conn.openSession();
             sess.execCommand("ls "+getPath());
 
+            // 获取系统输出的列表信息
             InputStream stdout = new StreamGobbler(sess.getStdout());
             BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
             loglist=new ArrayList<String>();

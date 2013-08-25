@@ -4,13 +4,16 @@ import Node.RingNode;
 import Tools.ClusterConnection;
 import Tools.ClusterManager;
 import Tools.DataManager;
+
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ActionContext;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+
 import org.apache.cassandra.dht.Token;
 import org.apache.cassandra.thrift.CfDef;
 import org.apache.cassandra.thrift.InvalidRequestException;
@@ -20,7 +23,7 @@ import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
 /**
- *
+ * 该类用作处理一些常用请求，包括获取Keyspace、Endpoints以及每个Keyspace的CF。
  * @author yeyh10
  */
 public class GetInfos extends ActionSupport{
@@ -78,12 +81,14 @@ public class GetInfos extends ActionSupport{
         setClusterManager(new ClusterManager(cn, cn.getHost(), cn.getJmxPort()));
     }
     
+    // 获取Keyspace列表
     public String getKSs() throws InterruptedException, IOException, TTransportException{
         checkCM();
         setKeyspaces(getClusterManager().getProbe().getKeyspaces());
         return "keyspaces";
     }
     
+    // 获取Endpoint列表
     public String getEps() throws TTransportException, IOException, InterruptedException {
         NodeProbe probe;
         ActionContext actionContext = ActionContext.getContext();
@@ -110,6 +115,7 @@ public class GetInfos extends ActionSupport{
         return "endpoints";
     }
     
+    // 获取所有Keyspace及其对应的Column Families
     public String getKSCFs() throws InterruptedException, IOException, TTransportException, TException, InvalidRequestException {
         ActionContext actionContext = ActionContext.getContext();
         Map session = actionContext.getSession();
@@ -123,7 +129,6 @@ public class GetInfos extends ActionSupport{
             try {
                 conn.connect();
             } catch (TTransportException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             dataManager = new DataManager(conn);

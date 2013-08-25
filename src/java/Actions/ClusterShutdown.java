@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package Actions;
-
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
@@ -17,7 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- *
+ * 该类用作处理关闭集群中机器的请求。
  * @author Wx
  */
 public class ClusterShutdown extends ActionSupport{
@@ -29,12 +24,12 @@ public class ClusterShutdown extends ActionSupport{
 
     public void setShutiplist(String shutiplist) {
         this.shutiplist = shutiplist;
-    }
-   
+    }   
   
     @Override
     public String execute() throws Exception {
-       
+        
+        // 将列表拆分，分别对每台机器进行关闭
         String[] ips = getShutiplist().split(";");
         for(int i=0;i<ips.length;i++){
             final String ipshut = ips[i].trim();
@@ -70,10 +65,11 @@ public class ClusterShutdown extends ActionSupport{
 	    	
                         /* Show exit status, if available (otherwise "null") */
                         System.out.println("ExitCode: " + sess.getExitStatus());
+                        
                         /* Close this session */
                         sess.close();
+                        
                         /* Close the connection */
-
                         conn.close();
                     }
                     catch (IOException e)

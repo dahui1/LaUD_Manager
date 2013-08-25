@@ -10,7 +10,7 @@ import java.util.Map;
 import org.apache.thrift.transport.TTransportException;
 
 /**
- *
+ * 该类用作处理获取指定Thread Pool实时监控数据的请求。
  * @author yeyh10
  */
 public class TPStatics extends ActionSupport{
@@ -97,6 +97,7 @@ public class TPStatics extends ActionSupport{
             setDataManager(new DataManager(getConn()));
             session.put("dataManager", dataManager);
         }
+        // 获取指定类型的线程池数据
         setTpstatics(getDataManager().getTpstats(ip, tpname));
         if (type.equals("Active Count")) {
             setResult(String.valueOf(getTpstatics().getActiveCount()));

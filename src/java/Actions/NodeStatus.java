@@ -16,6 +16,10 @@ import Tools.ClusterManager;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * 该类用作处理获取所有节点信息的请求。
+ * @author yeyh10
+ */
 public class NodeStatus extends ActionSupport {
 
     private ClusterManager clusterManager;
@@ -67,6 +71,7 @@ public class NodeStatus extends ActionSupport {
         ClusterConnection cn = (ClusterConnection)session.get("conn");
         cn.connect();
         setClusterManager(new ClusterManager(cn, cn.getHost(), cn.getJmxPort()));
+        // 获取集群的节点环
         RingNode ring = getClusterManager().listRing();
         Map<Token, String> rangeMap = ring.getRangeMap();
         List<Token> t = ring.getRanges();
@@ -74,6 +79,7 @@ public class NodeStatus extends ActionSupport {
             String primaryEndpoint = rangeMap.get(token);
             NodeInfo nodeInfo = null;
             try {
+                // 获取该结点的详细信息
                 nodeInfo = getClusterManager().getNodeInfo(primaryEndpoint, token);
             } catch (InterruptedException e) {
                 e.printStackTrace();

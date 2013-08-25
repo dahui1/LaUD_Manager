@@ -15,7 +15,7 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session; 
 import ch.ethz.ssh2.StreamGobbler;
 /**
- *
+ * 该类用作处理开启集群中机器的请求
  * @author yeyh10
  */
 public class ClusterStartup extends ActionSupport{
@@ -30,7 +30,9 @@ public class ClusterStartup extends ActionSupport{
     }
 
     @Override
-    public String execute() throws Exception {       
+    public String execute() throws Exception {  
+        
+        // 将列表拆分，分别对每台机器进行开启
         String[] ips = getStartiplist().split(";");
         for(int i=0;i<ips.length;i++){
             final String ipstart = ips[i].trim();
@@ -65,17 +67,16 @@ public class ClusterStartup extends ActionSupport{
 	    	
                         /* Show exit status, if available (otherwise "null") */
                         System.out.println("ExitCode: " + sess.getExitStatus());
+                        
                         /* Close this session */
-
                         sess.close();
+                        
                         /* Close the connection */
-
                         conn.close();
                     }
                     catch (IOException e)
                     {
                        e.printStackTrace(System.err); 
-                       //System.exit(2);
                     }
                 }
             });
